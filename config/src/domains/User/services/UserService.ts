@@ -16,19 +16,6 @@ class UserService{
         return user;
 
     }
-    async getUsers() {
-		const users = await prisma.user.findMany( { orderBy: { name: 'asc' }}); 
-		return users;
-	}
-    async getUserbyId(wantedId: string) {
-		const user = await prisma.user.findFirst({ where: { id: wantedId } });
-		return user; // Retorna esse usuário.
-	}
-    async getUserbyEmail(wantedEmail: string) {
-		const user = await prisma.user.findFirst({ where: { email: wantedEmail } });
-		return user;
-	}
-
 }
 
 export default new UserService();
