@@ -19,10 +19,7 @@ class UserService{
         return user;
 
     }
-
- 
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
-    
     async getUsers() {
         const users = await prisma.user.findMany( { orderBy: { name: 'asc' }}); 
         return users;
@@ -32,7 +29,6 @@ class UserService{
         const user = await prisma.user.findFirst({ where: { email: wantedEmail } });
         return user;
     }
-
     async getUserbyId(id: number) {
         const user = await prisma.user.findUnique({
           where: { id },
@@ -44,10 +40,7 @@ class UserService{
     
         return user;
       }
-
- 
-
-  // U - CRUD - Update de algum usuário baseado no ID
+    // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {
         const user = await this.getUserbyId(id); 
   
@@ -66,22 +59,12 @@ class UserService{
         }); 
         return updatedUser;
     }
-
-
     async deleteUser(wantedId: number) {
 		const user = await this.getUserbyId(wantedId);
-	
-		
-		if (user) {
+	    if (user) {
 			await prisma.user.delete(({ where: { id: wantedId } }));
 		} 
 	}
-
-
-
-
-   
-
 }
 
 export default new UserService();
