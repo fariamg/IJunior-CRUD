@@ -22,10 +22,10 @@ async function main(){
 
 // UPDATE
 
-const id = 1;
+const id = 2;
 async function main2(){
     const body = {
-        id: 1,
+        id: 2,
         name:"Teste5",
         email: "teste5@gmail.com",
         photo: null,
@@ -38,8 +38,14 @@ async function main2(){
     
 }
 
+async function main3(){
+    const id = 2;
 
+    const user = await UserService.deleteUser(id)
+    
+}
 
-
-main2()
+//main();/
+//main2()
+main3();
 
