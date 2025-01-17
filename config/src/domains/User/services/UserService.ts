@@ -17,6 +17,7 @@ class UserService{
         return user;
 
     }
+<<<<<<< HEAD
 
     async updateUser(id: string, body: User) {
 		const user = await this.getUserbyId(id); 
@@ -35,6 +36,19 @@ class UserService{
 			}
 		}); // Atualizamos esse usuário com os novos dados.
 		return updatedUser;
+=======
+    async getUsers() {
+		const users = await prisma.user.findMany( { orderBy: { name: 'asc' }}); 
+		return users;
+	}
+    async getUserbyId(wantedId: string) {
+		const user = await prisma.user.findFirst({ where: { id: wantedId } });
+		return user; // Retorna esse usuário.
+	}
+    async getUserbyEmail(wantedEmail: string) {
+		const user = await prisma.user.findFirst({ where: { email: wantedEmail } });
+		return user;
+>>>>>>> 966b5106b3328d52f9252e5eb16e7e364b76a7b7
 	}
 
 }
