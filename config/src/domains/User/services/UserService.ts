@@ -8,7 +8,7 @@ class UserService{
     async create(body: User){
         const user =  await prisma.user.create({
             data: {
-                name:body.name,
+                name: body.name,
                 email: body.email,
                 photo: body.photo,
                 password: body.password,
