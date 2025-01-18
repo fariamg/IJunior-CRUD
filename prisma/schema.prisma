@@ -10,10 +10,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-enum Role{
-  USER
-  ADMIN
-}
 
 model User{
   id Int @id @default(autoincrement())
@@ -21,5 +17,5 @@ model User{
   email String @unique
   photo String?
   password String
-  role Role @default(USER)
+  role String
 }

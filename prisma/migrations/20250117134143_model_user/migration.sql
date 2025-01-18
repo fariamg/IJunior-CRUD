@@ -5,7 +5,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "photo" TEXT,
     "password" TEXT NOT NULL,
-    "role" TEXT NOT NULL DEFAULT 'USER' CHECK(role IN ('USER', 'ADMIN'))
+    "role" TEXT NOT NULL
 );
 
 -- CreateIndex

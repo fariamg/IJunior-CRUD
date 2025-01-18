@@ -1,7 +1,9 @@
 import UserService from "./config/src/domains/User/services/UserService";
-import { PrismaClient, Role } from '@prisma/client';
+
 
 // CREATE
+
+
 async function main(){
     const body = {
         id: 0,
@@ -9,7 +11,7 @@ async function main(){
         email: "teste@gmail.com",
         photo: null,
         password: "Senha123",
-        role: Role.ADMIN
+        role: "admin"
     } 
     
     const user = await UserService.create(body)
@@ -19,6 +21,7 @@ async function main(){
 
 
 // UPDATE
+
 const id = 2;
 async function main2(){
     const body = {
@@ -27,11 +30,12 @@ async function main2(){
         email: "teste5@gmail.com",
         photo: null,
         password: "teste5",
-        role: Role.ADMIN
+        role: "admin2"
     }
 
     const user = await UserService.updateUser(id, body)
     console.log(user);
+    
 }
 
 async function main3(){
