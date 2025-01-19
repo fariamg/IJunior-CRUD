@@ -4,21 +4,20 @@ import prisma from "../../../../../config/prismaClient";
 
 class UserService {
 
-    // C - CRUD, criação do body
-    async create(body: User){
-        const user =  await prisma.user.create({
+    // C - CRUD - Criação de um novo usuário
+    async createUser(body: User) {
+        const user = await prisma.user.create({
             data: {
-                name:body.name,
+                name: body.name,
                 email: body.email,
                 photo: body.photo,
                 password: body.password,
                 role: body.role
             }
         });
-
         return user;
-
     }
+    
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
         const users = await prisma.user.findMany( { orderBy: { name: 'asc' }}); 
@@ -59,6 +58,7 @@ class UserService {
         }); 
         return updatedUser;
     }
+    
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number) {
 		const user = await this.getUserbyId(wantedId);
