@@ -3,21 +3,23 @@ import prisma from '../../../../../config/prismaClient';
 
 class ArtistService {
 
-    async create(body: Artist) {
+    async createArtist(body: Artist) {
         const artist = await prisma.artist.create({
             data: {
                 name: body.name,
                 photo: body.photo,
                 bio: body.bio,
-                listeners: body.listeners, // Aqui na verdade seria um increment a cada user que escutar sua musica
+                listeners: body.listeners,
             }
         });
-
-        return artist;
+        return artist
     }
 
     async getArtists() {
-        const artists = await prisma.artist.findMany({ orderBy: { name: 'asc' } });
+        const artists = await prisma.artist.findMany({ 
+            orderBy: { name: 'asc' },
+            include: { musics: true }
+        });
         return artists;
     }
 
