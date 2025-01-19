@@ -1,10 +1,15 @@
 import UserService from "./config/src/domains/User/services/UserService";
+import ArtistService from "./config/src/domains/Artist/services/ArtistService";
 
+async function clearDatabase(){ // Função para limpar o banco de dados para teste
+    await UserService.deleteAll();
+    await ArtistService.deleteAll();
+}
 
-// CREATE
+// // CREATE
+(async () => {
+    clearDatabase();
 
-
-async function main(){
     const body = {
         id: 0,
         name:"Teste",
@@ -13,39 +18,46 @@ async function main(){
         password: "Senha123",
         role: "admin"
     } 
-    
     const user = await UserService.create(body)
-        
     console.log(user);
-}
 
-
-// UPDATE
-
-const id = 2;
-async function main2(){
-    const body = {
-        id: 2,
-        name:"Teste5",
-        email: "teste5@gmail.com",
+    const body2 = {
+        id: 0,
+        name: "ArtistaTeste",
         photo: null,
-        password: "teste5",
-        role: "admin2"
+        bio: "BioTeste",
+        listeners: 0,
+        createdAt: new Date()
     }
+    const artist = await ArtistService.create(body2)
+    console.log(artist);
+})(); //Função IIFE se autoinvoca
 
-    const user = await UserService.updateUser(id, body)
-    console.log(user);
-    
-}
 
-async function main3(){
-    const id = 2;
+// // UPDATE
+// (async () => {
+//     clearDatabase();
 
-    const user = await UserService.deleteUser(id)
-    
-}
+//     const body = {
+//         id: 0,
+//         name:"Teste9W123893",
+//         email: "dasisdjij",
+//         photo: null,
+//         password: "Senha12dwsdws3",
+//         role: "user"
+//     }
+//     const user = await UserService.create(body)
+//     console.log(user);
 
-//main();/
-//main2()
-main3();
+//     const body2 = {
+//         id: 0,
+//         name: "ArtistaTeste",
+//         photo: null,
+//         bio: "BioTeste",
+//         listeners: 129823193,
+//         createdAt: new Date()
+//     }
 
+//     const artist = await ArtistService.create(body2)
+//     console.log(artist);
+// })()
