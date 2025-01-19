@@ -20,7 +20,9 @@ class UserService {
     
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
-        const users = await prisma.user.findMany( { orderBy: { name: 'asc' }}); 
+        const users = await prisma.user.findMany( {
+            orderBy: { name: 'asc' }
+        }); 
         return users;
     }
 
@@ -28,6 +30,7 @@ class UserService {
         const user = await prisma.user.findFirst({ where: { email: wantedEmail } });
         return user;
     }
+    
     async getUserbyId(id: number) {
         const user = await prisma.user.findUnique({
             where: { id },
@@ -58,7 +61,7 @@ class UserService {
         }); 
         return updatedUser;
     }
-    
+
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number) {
 		const user = await this.getUserbyId(wantedId);
