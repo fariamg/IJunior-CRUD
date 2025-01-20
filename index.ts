@@ -1,6 +1,7 @@
 import UserService from "./config/src/domains/User/services/UserService";
 import ArtistService from "./config/src/domains/Artist/services/ArtistService";
 import MusicService from "./config/src/domains/Music/services/MusicService";
+import CountryService from "./config/src/domains/Country/services/CountryService";
 import prisma from "./config/prismaClient";
 import { Artist } from '@prisma/client';
 
@@ -12,6 +13,12 @@ import { Artist } from '@prisma/client';
 
 //CREATE
 // (async () => {
+//     console.log(await CountryService.createCountry({
+//         name: "Brasil",
+//         id: 0,
+//         continent: "America do Sul"
+//     }))
+
 //     console.log(await UserService.createUser({
 //         name: "Teste",
 //         id: 0,
@@ -19,8 +26,9 @@ import { Artist } from '@prisma/client';
 //         photo: null,
 //         password: "Senha12dwsdws3",
 //         role: "user",
-//         createdAt: new Date()
-//     }))
+//         createdAt: new Date(),
+//         countryId: 1
+//     }, 1))
     
 //     const artist = await ArtistService.createArtist({
 //         name: "ArtistaTeste",
@@ -28,8 +36,9 @@ import { Artist } from '@prisma/client';
 //         photo: null,
 //         bio: "BioTeste",
 //         listeners: 129823193,
-//         createdAt: new Date()
-//     })
+//         createdAt: new Date(),
+//         countryId: 1
+//     }, 1)
 //     console.log(artist);
 
 //     const artist2 = await ArtistService.createArtist({
@@ -38,8 +47,9 @@ import { Artist } from '@prisma/client';
 //         photo: null,
 //         bio: "BioTeste",
 //         listeners: 129823193,
-//         createdAt: new Date()
-//     })
+//         createdAt: new Date(),
+//         countryId: 1
+//     }, 1)
 //     console.log(artist);
 
 //     const newMusic = await MusicService.createMusic({
