@@ -8,7 +8,7 @@ class UserService {
     async createUser(body: User, countryID: number) {
         const user = await prisma.user.create({
             data: {
-                name: body.name,
+                fullName: body.fullName,
                 email: body.email,
                 photo: body.photo,
                 password: body.password,
@@ -24,7 +24,7 @@ class UserService {
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
         const users = await prisma.user.findMany( {
-            orderBy: { name: 'asc' }
+            orderBy: { fullName: 'asc' }
         }); 
         return users;
     }
@@ -63,7 +63,7 @@ class UserService {
 
         const updatedUser = await prisma.user.update({
             data: {
-                name:body.name,
+                fullName:body.fullName,
                 email: body.email,
                 photo: body.photo,
                 password: body.password,

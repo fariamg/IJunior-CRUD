@@ -3,6 +3,7 @@ import ArtistService from "./config/src/domains/Artist/services/ArtistService";
 import MusicService from "./config/src/domains/Music/services/MusicService";
 import CountryService from "./config/src/domains/Country/services/CountryService";
 import prisma from "./config/prismaClient";
+import { Role } from "@prisma/client";
 import { Artist } from '@prisma/client';
 
 // PARA TESTAR É SO DESCOMENTAR O CODIGO NA FUNÇÃO QUE VC QUER APLICAR, NÃO PRECISA CHAMAR A FUNÇÃO, ELA SE CHAMA SOZINHA (FUNÇÃO AUTO INVOCAVEL/IIFE)
@@ -12,54 +13,56 @@ import { Artist } from '@prisma/client';
 //SE QUISER LIMPAR O BANCO DE DADOS E REAPLICAR AS MIGRATES USAR COMANDO "npx prisma migrate reset"
 
 //CREATE
-// (async () => {
-//     console.log(await CountryService.createCountry({
-//         name: "Brasil",
-//         id: 0,
-//         continent: "America do Sul"
-//     }))
+//(async () => {
+    // console.log(await CountryService.createCountry({
+    //     name: "Brasil",
+    //     id: 0,
+    //     continent: "America do Sul"
+    // }))
 
-//     console.log(await UserService.createUser({
-//         name: "Teste",
-//         id: 0,
-//         email: "dasisdjij",
-//         photo: null,
-//         password: "Senha12dwsdws3",
-//         role: "user",
-//         createdAt: new Date(),
-//         countryId: 1
-//     }, 1))
+    // console.log(await UserService.createUser({
+    //     fullName: "Teste",
+    //     id: 0,
+    //     email: "dasisdjij",
+    //     photo: null,
+    //     password: "Senha12dwsdws3",
+    //     role: Role.USER,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //     countryId: 1,
+    //     isActive: true
+    // }, 1))
     
-//     const artist = await ArtistService.createArtist({
-//         name: "ArtistaTeste",
-//         id: 0,
-//         photo: null,
-//         bio: "BioTeste",
-//         listeners: 129823193,
-//         createdAt: new Date(),
-//         countryId: 1
-//     }, 1)
-//     console.log(artist);
+    // const artist = await ArtistService.createArtist({
+    //     name: "ArtistaTeste",
+    //     id: 0,
+    //     photo: null,
+    //     bio: "BioTeste",
+    //     listeners: 129823193,
+    //     createdAt: new Date(),
+    //     countryId: 1
+    // }, 1)
+    // console.log(artist);
 
-//     const artist2 = await ArtistService.createArtist({
-//         name: "ArtistaTeste",
-//         id: 0,
-//         photo: null,
-//         bio: "BioTeste",
-//         listeners: 129823193,
-//         createdAt: new Date(),
-//         countryId: 1
-//     }, 1)
-//     console.log(artist);
+    // const artist2 = await ArtistService.createArtist({
+    //     name: "ArtistaTeste",
+    //     id: 0,
+    //     photo: null,
+    //     bio: "BioTeste",
+    //     listeners: 129823193,
+    //     createdAt: new Date(),
+    //     countryId: 1
+    // }, 1)
+    // console.log(artist);
 
-//     const newMusic = await MusicService.createMusic({
-//         name: "Nova Música",
-//         id: 0,
-//         createdAt: new Date(),
-//         duration: 240,
-//         recordDate: new Date(),
-//     }, [artist.id, artist2.id]); 
-//     console.log(newMusic);
+    // const newMusic = await MusicService.createMusic({
+    //     name: "Nova Música",
+    //     id: 0,
+    //     createdAt: new Date(),
+    //     duration: 240,
+    //     recordDate: new Date(),
+    // }, [artist.id, artist2.id]); 
+    // console.log(newMusic);
 // })()
 //     .catch((e) =>  {
 //         throw e;
@@ -91,24 +94,29 @@ import { Artist } from '@prisma/client';
 
 // // UPDATE
 // (async () => {
+
 //     console.log(await UserService.updateUser(1, {
-//         name: "Testeajdbsjbda",
-//         id: 216317367821,
+//         fullName: "Teste",
+//         id: 1872398,
 //         email: "dasisdjij",
 //         photo: null,
 //         password: "Senha12dwsdws3",
-//         role: "user",
-//         createdAt: new Date()
+//         role: Role.USER,
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//         countryId: 1,
+//         isActive: true
 //     }))
 
-//     console.log(await ArtistService.updateArtist(1, {
-//         name: "ArtistaTestedasjdadhuis",
-//         id: 0,
-//         photo: null,
-//         bio: "BioTeste",
-//         listeners: 129823193,
-//         createdAt: new Date()
-//     }))
+//     console.log(await ArtistService.updateArtist(1,{
+//             name: "ArtistaTesteAtualizado",
+//             id: 0,
+//             photo: null,
+//             bio: "BioTeste",
+//             listeners: 129823193,
+//             createdAt: new Date(),
+//             countryId: 1
+//         }))
 
 //     console.log(await MusicService.updateMusic(1, {
 //         name: "Nova Músicaasjdnjasdnja",
