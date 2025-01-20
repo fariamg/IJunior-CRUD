@@ -37,9 +37,9 @@ model Artist {
   bio       String?
   listeners Int
   createdAt DateTime? @default(now())
+  musics    Music[]
   countryId Int
   country   Country @relation(fields: [countryId], references: [id])
-  musics    Music[] //Implicit relation. Cria uma tabela intermediaria que cuida da relação m-n (muitos para muitos), ja que um artista pode ter muitas musicas e uma musica pode ter muitos artistas
 
   @@map("artists")
 }
@@ -51,6 +51,7 @@ model Music {
   recordDate  DateTime
   createdAt   DateTime? @default(now())
   artists     Artist[] 
+
   @@map("musics")
 }
 
