@@ -1,6 +1,9 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+enum Role {
+  USER
+  ADMIN
+}
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,11 +14,53 @@ datasource db {
 }
 
 
-model User{
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  photo String?
-  password String
-  role String
+model User {
+  id        Int @id @default(autoincrement())
+  fullName  String
+  email     String @unique
+  photo     String?
+  password  String
+  role      Role @default(USER)
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+  isActive  Boolean @default(true)
+
+  @@map("users")
+}
+
+model Artist {
+  id        Int @id @default(autoincrement())
+  name      String
+  photo     String?
+  bio       String?
+  listeners Int
+  createdAt DateTime? @default(now())
+  musics    Music[]
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
+
+  @@map("artists")
+}
+
+model Music {
+  id          Int @id @default(autoincrement())
+  name        String
+  duration    Int
+  recordDate  DateTime
+  createdAt   DateTime? @default(now())
+  artists     Artist[] 
+
+  @@map("musics")
+}
+
+model Country {
+  id        Int @id @default(autoincrement())
+  name      String
+  continent String
+  users     User[] 
+  artists   Artist[]
+
+  @@map("countries")
 }
