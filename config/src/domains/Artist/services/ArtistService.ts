@@ -1,15 +1,18 @@
-import { Artist } from '@prisma/client';
+import { Artist, Country } from '@prisma/client';
 import prisma from '../../../../../config/prismaClient';
 
 class ArtistService {
 
-    async createArtist(body: Artist) {
+    async createArtist(body: Artist, countryId: number) {
         const artist = await prisma.artist.create({
             data: {
                 name: body.name,
                 photo: body.photo,
                 bio: body.bio,
                 listeners: body.listeners,
+                country: {
+                    connect: { id: countryId }
+                }
             }
         });
         return artist
@@ -20,6 +23,18 @@ class ArtistService {
             orderBy: { name: 'asc' },
             include: { musics: true }
         });
+        return artists;
+    }
+
+    async getArtistbyCountry(country: Country) {
+        const artists = await prisma.artist.findMany({
+            where: {
+                country: {
+                    name: country.name
+                }
+            }
+        });
+
         return artists;
     }
 
