@@ -19,6 +19,8 @@ model User {
   password  String
   role      String
   createdAt DateTime? @default(now())
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
 
   @@map("users")
 }
@@ -31,6 +33,8 @@ model Artist {
   listeners Int
   createdAt DateTime? @default(now())
   musics    Music[]
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
 
   @@map("artists")
 }
@@ -44,4 +48,14 @@ model Music {
   artists     Artist[] 
 
   @@map("musics")
+}
+
+model Country {
+  id        Int @id @default(autoincrement())
+  name      String
+  continent String
+  users     User[] 
+  artists   Artist[]
+
+  @@map("countries")
 }
