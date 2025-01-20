@@ -6,12 +6,6 @@ import prisma from "./config/prismaClient";
 import { Role } from "@prisma/client";
 import { Artist } from '@prisma/client';
 
-// PARA TESTAR É SO DESCOMENTAR O CODIGO NA FUNÇÃO QUE VC QUER APLICAR, NÃO PRECISA CHAMAR A FUNÇÃO, ELA SE CHAMA SOZINHA (FUNÇÃO AUTO INVOCAVEL/IIFE)
-
-//LEMBRAR DE POPULAR O BANCO DE DADOS COM DADOS ANTES DE RODAR O CODIGO
-
-//SE QUISER LIMPAR O BANCO DE DADOS E REAPLICAR AS MIGRATES USAR COMANDO "npx prisma migrate reset"
-
 //CREATE
 //(async () => {
     // console.log(await CountryService.createCountry({
