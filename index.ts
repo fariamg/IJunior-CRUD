@@ -12,58 +12,59 @@ dotenv.config();
 
 app.listen(process.env.PORT, () => {
     console.log("Servidor hosteado na porta " + process.env.PORT)
-})
+});
+
 //CREATE
-//(async () => {
-    // console.log(await CountryService.createCountry({
-    //     name: "Brasil",
-    //     id: 0,
-    //     continent: "America do Sul"
-    // }))
+// (async () => {
+//     console.log(await CountryService.createCountry({
+//         name: "Brasil",
+//         id: 0,
+//         continent: "America do Sul"
+//     }));
 
-    // console.log(await UserService.createUser({
-    //     fullName: "Teste",
-    //     id: 0,
-    //     email: "dasisdjij",
-    //     photo: null,
-    //     password: "Senha12dwsdws3",
-    //     role: Role.USER,
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //     countryId: 1,
-    //     isActive: true
-    // }, 1))
+//     console.log(await UserService.createUser({
+//         fullName: "Teste",
+//         id: 0,
+//         email: "dasisdjij",
+//         photo: null,
+//         password: "Senha12dwsdws3",
+//         role: Role.USER,
+//         createdAt: new Date(),
+//         updatedAt: new Date(),
+//         countryId: 1,
+//         isActive: true
+//     }, 1))
     
-    // const artist = await ArtistService.createArtist({
-    //     name: "ArtistaTeste",
-    //     id: 0,
-    //     photo: null,
-    //     bio: "BioTeste",
-    //     listeners: 129823193,
-    //     createdAt: new Date(),
-    //     countryId: 1
-    // }, 1)
-    // console.log(artist);
+//     const artist = await ArtistService.createArtist({
+//         name: "ArtistaTeste",
+//         id: 0,
+//         photo: null,
+//         bio: "BioTeste",
+//         listeners: 129823193,
+//         createdAt: new Date(),
+//         countryId: 1
+//     }, 1)
+//     console.log(artist);
 
-    // const artist2 = await ArtistService.createArtist({
-    //     name: "ArtistaTeste",
-    //     id: 0,
-    //     photo: null,
-    //     bio: "BioTeste",
-    //     listeners: 129823193,
-    //     createdAt: new Date(),
-    //     countryId: 1
-    // }, 1)
-    // console.log(artist);
+//     const artist2 = await ArtistService.createArtist({
+//         name: "ArtistaTeste",
+//         id: 0,
+//         photo: null,
+//         bio: "BioTeste",
+//         listeners: 129823193,
+//         createdAt: new Date(),
+//         countryId: 1
+//     }, 1)
+//     console.log(artist);
 
-    // const newMusic = await MusicService.createMusic({
-    //     name: "Nova Música",
-    //     id: 0,
-    //     createdAt: new Date(),
-    //     duration: 240,
-    //     recordDate: new Date(),
-    // }, [artist.id, artist2.id]); 
-    // console.log(newMusic);
+//     const newMusic = await MusicService.createMusic({
+//         name: "Nova Música",
+//         id: 0,
+//         createdAt: new Date(),
+//         duration: 240,
+//         recordDate: new Date(),
+//     }, [artist.id, artist2.id]); 
+//     console.log(newMusic);
 // })()
 //     .catch((e) =>  {
 //         throw e;
