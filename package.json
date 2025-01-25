@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node ./index.ts"
+    "start": "tsnd --respawn --transpile-only --exit-child=true --rs index.ts"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +12,12 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^22.10.7",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
+    "@typescript-eslint/parser": "^8.21.0",
+    "eslint": "^8.56.0",
     "prisma": "^6.2.1",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.3"
   },
   "dependencies": {
