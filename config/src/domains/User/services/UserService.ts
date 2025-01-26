@@ -46,16 +46,16 @@ class UserService {
         return user;
     }
 
-    async getUserByCountry(country: Country) {
+    async getUserByCountry(countryName: string) {
         const users = await prisma.user.findMany({
             where: {
-                country: {
-                    name: country.name
-                }
+            country: {
+                name: countryName // Usa diretamente o nome do país
+            }
             }
         });
-        return users;
-    }
+    return users;
+}
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {

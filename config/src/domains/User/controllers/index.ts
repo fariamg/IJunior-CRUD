@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction} from "express";
-import UserService from "../UserService";
+import UserService from "../services/UserService";
 
 
 const router = Router();
@@ -26,6 +26,25 @@ router.get("/:id", async(req: Request, res: Response, next: NextFunction) => {
     }
 });
 
+router.get("/:email" , async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = await UserService.getUserbyEmail(req.params.email);
+        res.json(user);
+    } catch (error) {
+        next(error)
+    }
+});
+
+router.get("/country" , async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await UserService.getUserByCountry(req.params.country);
+        res.json(users);
+        
+    } catch (error) {
+        next(error);
+        
+    }
+});
 
 
 export default router;
