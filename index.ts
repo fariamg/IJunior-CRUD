@@ -14,6 +14,9 @@ app.listen(process.env.PORT, () => {
     console.log("Servidor hosteado na porta " + process.env.PORT)
 });
 
+
+// TODO: Adicionar o country na parte de criação de músicas
+
 //CREATE
 // (async () => {
 //     console.log(await CountryService.createCountry({

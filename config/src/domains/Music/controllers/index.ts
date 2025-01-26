@@ -34,4 +34,6 @@ router.get("/:name", async(req: Request, res: Response, next: NextFunction) => {
     }
 })
 
+
+// TODO: adicionar função de filtrar por países 
 export default router;

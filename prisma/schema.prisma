@@ -54,7 +54,7 @@ model Music {
 
   @@map("musics")
 }
-
+// TODO: adicionar a parte de country nas músicas
 model Country {
   id        Int @id @default(autoincrement())
   name      String
@@ -64,3 +64,4 @@ model Country {
 
   @@map("countries")
 }
+
