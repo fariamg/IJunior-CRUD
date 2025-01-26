@@ -23,6 +23,15 @@ router.get("/:id", async(req: Request, res: Response, next: NextFunction) => {
         
     }
 })
+router.get("/:name", async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const music = await MusicService.getMusicbyName(req.params.name);
+        res.json(music);
+        
+    } catch (error) {
+        next(error);
+        
+    }
+})
 
-// import MusicRouter from "../config/src/domains/Music/controllers/index"
 export default router;

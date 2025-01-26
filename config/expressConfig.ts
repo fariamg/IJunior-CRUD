@@ -2,6 +2,7 @@ import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express }  from  "express";
 import UserRouter from "../config/src/domains/User/controllers/index";
+import MusicRouter from "../config/src/domains/Music/controllers/index"
 dotenv.config();
 
 
@@ -19,4 +20,5 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use("/api/users", UserRouter);
+app.use("/api/music", MusicRouter);
 // configurar rota de user.
