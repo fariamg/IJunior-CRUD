@@ -3,7 +3,7 @@ import prisma from '../../../../../config/prismaClient';
 
 class ArtistService {
 
-    async createArtist(body: Artist, countryId: number) {
+    async createArtist(body: Artist) {
         const artist = await prisma.artist.create({
             data: {
                 name: body.name,
@@ -40,7 +40,10 @@ class ArtistService {
 
     async getArtistbyName(name: string) {
         const artist = await prisma.artist.findFirst({
-            where: { name: name },
+            where: { name: {
+                equals: name },
+
+            },
         });
 
         if (!artist) {
@@ -75,6 +78,8 @@ class ArtistService {
                 id: id
             }
         });
+
+        
 
         return deletedArtist;
     }
