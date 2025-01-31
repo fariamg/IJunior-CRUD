@@ -1,11 +1,11 @@
-import { User, Country } from "@prisma/client";
+import { User} from "@prisma/client";
 import prisma from "../../../../../config/prismaClient";
 
 
 class UserService {
 
     // C - CRUD - Criação de um novo usuário
-    async createUser(body: User, countryID: number) {
+    async createUser(body: User) {
         const user = await prisma.user.create({
             data: {
                 fullName: body.fullName,
@@ -13,9 +13,7 @@ class UserService {
                 photo: body.photo,
                 password: body.password,
                 role: body.role,
-                country: {
-                    connect: { id: countryID }
-                }
+
             }
         });
         return user;
@@ -24,7 +22,7 @@ class UserService {
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
         const users = await prisma.user.findMany( {
-            orderBy: { fullName: 'asc' }
+            orderBy: { createdAt: 'asc'}
         }); 
         return users;
     }
@@ -46,16 +44,7 @@ class UserService {
         return user;
     }
 
-    async getUserByCountry(countryName: string) {
-        const users = await prisma.user.findMany({
-            where: {
-            country: {
-                name: countryName // Usa diretamente o nome do país
-            }
-            }
-        });
-    return users;
-}
+  
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {

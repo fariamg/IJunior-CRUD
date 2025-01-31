@@ -1,4 +1,4 @@
-import { Artist, Country } from '@prisma/client';
+import { Artist } from '@prisma/client';
 import prisma from '../../../../../config/prismaClient';
 
 class ArtistService {
@@ -10,9 +10,7 @@ class ArtistService {
                 photo: body.photo,
                 bio: body.bio,
                 listeners: body.listeners,
-                country: {
-                    connect: { id: countryId }
-                }
+            
             }
         });
         return artist
@@ -26,17 +24,7 @@ class ArtistService {
         return artists;
     }
 
-    async getArtistbyCountry(country: Country) {
-        const artists = await prisma.artist.findMany({
-            where: {
-                country: {
-                    name: country.name
-                }
-            }
-        });
 
-        return artists;
-    }
 
     async getArtistbyId(id: number) {
         const artist = await prisma.artist.findUnique({

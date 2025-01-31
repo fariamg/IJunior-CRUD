@@ -21,8 +21,6 @@ model User {
   photo     String?
   password  String
   role      Role @default(USER)
-  countryId Int
-  country   Country @relation(fields: [countryId], references: [id])
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
   isActive  Boolean @default(true)
@@ -38,8 +36,8 @@ model Artist {
   listeners Int
   createdAt DateTime? @default(now())
   musics    Music[]
-  countryId Int
-  country   Country @relation(fields: [countryId], references: [id])
+  
+
 
   @@map("artists")
 }
@@ -54,14 +52,3 @@ model Music {
 
   @@map("musics")
 }
-// TODO: adicionar a parte de country nas músicas
-model Country {
-  id        Int @id @default(autoincrement())
-  name      String
-  continent String
-  users     User[] 
-  artists   Artist[]
-
-  @@map("countries")
-}
-

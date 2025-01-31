@@ -1,7 +1,6 @@
 import UserService from "./config/src/domains/User/services/UserService";
 import ArtistService from "./config/src/domains/Artist/services/ArtistService";
 import MusicService from "./config/src/domains/Music/services/MusicService";
-import CountryService from "./config/src/domains/Country/services/CountryService";
 import prisma from "./config/prismaClient";
 import { Role } from "@prisma/client";
 import { Artist } from '@prisma/client';
@@ -19,12 +18,7 @@ app.listen(process.env.PORT, () => {
 
 //CREATE
 // (async () => {
-//     console.log(await CountryService.createCountry({
-//         name: "Brasil",
-//         id: 0,
-//         continent: "America do Sul"
-//     }));
-
+//   
 //     console.log(await UserService.createUser({
 //         fullName: "Teste",
 //         id: 0,
@@ -34,7 +28,7 @@ app.listen(process.env.PORT, () => {
 //         role: Role.USER,
 //         createdAt: new Date(),
 //         updatedAt: new Date(),
-//         countryId: 1,
+//
 //         isActive: true
 //     }, 1))
     
@@ -45,7 +39,7 @@ app.listen(process.env.PORT, () => {
 //         bio: "BioTeste",
 //         listeners: 129823193,
 //         createdAt: new Date(),
-//         countryId: 1
+//         
 //     }, 1)
 //     console.log(artist);
 
@@ -56,7 +50,7 @@ app.listen(process.env.PORT, () => {
 //         bio: "BioTeste",
 //         listeners: 129823193,
 //         createdAt: new Date(),
-//         countryId: 1
+//      
 //     }, 1)
 //     console.log(artist);
 
@@ -109,7 +103,7 @@ app.listen(process.env.PORT, () => {
 //         role: Role.USER,
 //         createdAt: new Date(),
 //         updatedAt: new Date(),
-//         countryId: 1,
+//        
 //         isActive: true
 //     }))
 
@@ -120,7 +114,7 @@ app.listen(process.env.PORT, () => {
 //             bio: "BioTeste",
 //             listeners: 129823193,
 //             createdAt: new Date(),
-//             countryId: 1
+//            
 //         }))
 
 //     console.log(await MusicService.updateMusic(1, {
