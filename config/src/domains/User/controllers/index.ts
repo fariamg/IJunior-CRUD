@@ -5,7 +5,7 @@ import UserService from "../services/UserService";
 const router = Router();
 
 
-// ROTAS PARA LEITURA (GET)
+// ROTAS PARA LEITURA (GET) //
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await UserService.getUsers();
@@ -58,7 +58,7 @@ router.post("/create", async function createUser(req: Request, res: Response, ne
     }
 });
 
-// ROTA PARA ATUALIZAR UM USUÁRIO (PUT)
+// ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
 router.put("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
@@ -86,7 +86,7 @@ router.delete("/:id", async function createUser(req: Request, res: Response, nex
         res.status(200).json({
             message: `Usuário com ID ${id} deletado com sucesso!`,
             
-        }); // Use o status 200 para sucesso na atualização
+        }); 
 
     } catch (error) {
         next(error);
