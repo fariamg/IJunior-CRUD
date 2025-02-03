@@ -1,6 +1,6 @@
-import UserService from "./config/src/domains/User/services/UserService";
-import ArtistService from "./config/src/domains/Artist/services/ArtistService";
-import MusicService from "./config/src/domains/Music/services/MusicService";
+import UserService from "./src/domains/User/services/UserService";
+import ArtistService from "./src/domains/Artist/services/ArtistService";
+import MusicService from "./src/domains/Music/services/MusicService";
 import prisma from "./config/prismaClient";
 import { Role } from "@prisma/client";
 import { Artist } from '@prisma/client';
