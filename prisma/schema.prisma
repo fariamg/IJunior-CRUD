@@ -4,6 +4,7 @@ enum Role {
   USER
   ADMIN
 }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -28,6 +29,7 @@ model User {
   isActive       Boolean    @default(true)
   playlists      Playlist[] @relation("UserPlaylists")
   collaborations Playlist[] @relation("PlaylistCollaborators")
+  likes          Like[]
 
   @@map("users")
 }
@@ -54,6 +56,8 @@ model Music {
   createdAt   DateTime? @default(now())
   artists     Artist[] 
   playlists   Playlist[]
+  likes       Like[]
+  likeCount   Int @default(0)
 
   @@map("musics")
 }
@@ -80,3 +84,14 @@ model Playlist {
   @@map("playlists")
 }
 
+model Like {
+  id       Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  musicId   Int
+  music     Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
+  createdAt DateTime? @default(now())
+
+  @@unique([userId, musicId]) 
+  @@map("likes")
+}
