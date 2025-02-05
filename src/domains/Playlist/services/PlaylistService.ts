@@ -2,37 +2,31 @@ import { Playlist } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 
 class PlaylistService {
-    async createPlaylist(body: Playlist, creatorId: number, colaboratorIds?: number[]) {
-        const playlist = await prisma.playlist.create({
-            data: {
-                name: body.name,
-                creatorId: creatorId,
-                collaborators: colaboratorIds ? { connect: colaboratorIds.map(id => ({ id })) } : undefined,
-            },
-        });
-        return playlist;
+    async createPlaylist(body: Omit<Playlist, 'id'>, creatorId: number, collaboratorIds?: number[]) {
+        try {
+            return await prisma.playlist.create({
+                data: {
+                    ...body,
+                    creatorId,
+                    collaborators: collaboratorIds ? { connect: collaboratorIds.map(id => ({ id })) } : undefined,
+                },
+            });
+        } catch (error) {
+            console.error("Erro ao criar playlist:", error);
+            throw new Error("Erro ao criar playlist");
+        }
     }
 
     async addMusicToPlaylist(playlistId: number, musicId: number) {
-        return await prisma.playlist.update({
-            where: { id: playlistId },
-            data: {
-                musics: {
-                    connect: { id: musicId },
-                },
-            },
-        });
+        return this.updatePlaylistRelations(playlistId, 'musics', 'connect', musicId);
+    }
+
+    async removeMusicFromPlaylist(playlistId: number, musicId: number) {
+        return this.updatePlaylistRelations(playlistId, 'musics', 'disconnect', musicId);
     }
 
     async addCollaboratorToPlaylist(playlistId: number, collaboratorId: number) {
-        return await prisma.playlist.update({
-            where: { id: playlistId },
-            data: {
-                collaborators: {
-                    connect: { id: collaboratorId },
-                },
-            },
-        });
+        return this.updatePlaylistRelations(playlistId, 'collaborators', 'connect', collaboratorId);
     }
 
     async getPlaylists() {
@@ -42,29 +36,11 @@ class PlaylistService {
     }
 
     async getPlaylistById(id: number) {
-        const playlist = await prisma.playlist.findUnique({
-            where: { id },
-            include: { creator: true, musics: true, collaborators: true },
-        });
-
-        if (!playlist) {
-            throw new Error(`Id  ${id} não encontrado`);
-        }
-
-        return playlist;
+        return this.findPlaylist({ id });
     }
 
     async getPlaylistByName(name: string) {
-        const playlist = await prisma.playlist.findFirst({
-            where: { name: name },
-            include: { creator: true, musics: true, collaborators: true },
-        });
-
-        if (!playlist) {
-            throw new Error(`Nome  ${name} não encontrado`);
-        }
-
-        return playlist;
+        return this.findPlaylist({ name });
     }
 
     async getPlaylistsByCreatorId(creatorId: number) {
@@ -75,50 +51,41 @@ class PlaylistService {
     }
 
     async getMusicsFromPlaylist(playlistId: number) {
-        const playlist = await prisma.playlist.findUnique({
-            where: { id: playlistId },
-            include: { musics: true },
-        });
-
-        if (!playlist) throw new Error("Playlist not found");
+        const playlist = await this.getPlaylistById(playlistId);
         return playlist.musics;
     }
 
-    async updatePlaylist(id: number, body: Playlist) {
-        const playlist = await this.getPlaylistById(id);
-
-        const updatedPlaylist = await prisma.playlist.update({
-            data: {
-                name: body.name,
-            },
-            where: {
-                id: id,
-            },
+    async updatePlaylist(id: number, body: Partial<Playlist>) {
+        await this.getPlaylistById(id);
+        return await prisma.playlist.update({
+            where: { id },
+            data: body,
         });
-
-        return updatedPlaylist;
     }
 
-    async removeMusicFromPlaylist(playlistId: number, musicId: number) {
+    async deletePlaylist(id: number) {
+        await this.getPlaylistById(id);
+        await prisma.playlist.delete({ where: { id } });
+    }
+
+    private async findPlaylist(where: { id?: number; name?: string }) {
+        const playlist = await prisma.playlist.findFirst({
+            where,
+            include: { creator: true, musics: true, collaborators: true },
+        });
+        if (!playlist) throw new Error(`Playlist não encontrada: ${JSON.stringify(where)}`);
+        return playlist;
+    }
+
+    private async updatePlaylistRelations(playlistId: number, 
+        relation: 'musics' | 'collaborators', action: 'connect' | 'disconnect', 
+        relatedId: number) {
+        await this.getPlaylistById(playlistId);
         return await prisma.playlist.update({
             where: { id: playlistId },
-            data: {
-                musics: {
-                    disconnect: { id: musicId },
-                },
-            },
+            data: { [relation]: { [action]: { id: relatedId } } },
         });
     }
-
-    async deletePlaylist(wantedId: number) {
-        const playlist = await this.getPlaylistById(wantedId);
-        if (playlist) {
-            await prisma.playlist.delete({
-                where: { id: wantedId },
-            });
-        }
-    }
 }
-
 
 export default new PlaylistService();
