@@ -55,13 +55,6 @@ class PlaylistService {
         return playlist.musics;
     }
 
-    async updatePlaylist(id: number, body: Partial<Playlist>) {
-        await this.getPlaylistById(id);
-        return await prisma.playlist.update({
-            where: { id },
-            data: body,
-        });
-    }
 
     async deletePlaylist(id: number) {
         await this.getPlaylistById(id);
@@ -77,9 +70,7 @@ class PlaylistService {
         return playlist;
     }
 
-    private async updatePlaylistRelations(playlistId: number, 
-        relation: 'musics' | 'collaborators', action: 'connect' | 'disconnect', 
-        relatedId: number) {
+    private async updatePlaylistRelations(playlistId: number, relation: 'musics' | 'collaborators', action: 'connect' | 'disconnect', relatedId: number) {
         await this.getPlaylistById(playlistId);
         return await prisma.playlist.update({
             where: { id: playlistId },
