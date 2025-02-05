@@ -68,11 +68,9 @@ model Music {
   artists    Artist[]
   playlists  Playlist[]
   likes      Like[]
-  likeCount  Int       @default(0) @map("like_count") 
   playCount  Int       @default(0) @map("play_count")  
 
   @@map("musics")
-  @@index([likeCount]) 
 }
 
 model Country {
