@@ -11,7 +11,6 @@ class LikeService {
                 },
             });
         } catch (error) {
-            console.error("Erro ao criar like:", error);
             throw new Error("Erro ao criar like");
         }
     }
@@ -28,7 +27,6 @@ class LikeService {
         try {
             return await prisma.like.count({ where: { musicId } });
         } catch (error) {
-            console.error("Erro ao contar likes da música:", error);
             throw new Error("Erro ao contar likes");
         }
     }
@@ -41,7 +39,6 @@ class LikeService {
                 },
             });
         } catch (error) {
-            console.error("Erro ao deletar like:", error);
             throw new Error("Erro ao deletar like");
         }
     }
@@ -50,7 +47,6 @@ class LikeService {
         try {
             return await prisma.like.findMany({ where, include });
         } catch (error) {
-            console.error("Erro ao buscar likes:", error);
             throw new Error("Erro ao buscar likes");
         }
     }

@@ -12,7 +12,6 @@ class SubscriptionService {
                 },
             });
         } catch (error) {
-            console.error("Erro ao criar assinatura:", error);
             throw new Error("Erro ao criar assinatura");
         }
     }
@@ -24,7 +23,6 @@ class SubscriptionService {
                 include: { payments: true },
             });
         } catch (error) {
-            console.error("Erro ao buscar assinatura:", error);
             throw new Error("Erro ao buscar assinatura");
         }
     }
@@ -36,7 +34,6 @@ class SubscriptionService {
                 data: { type, duration },
             });
         } catch (error) {
-            console.error("Erro ao atualizar assinatura:", error);
             throw new Error("Erro ao atualizar assinatura");
         }
     }
@@ -47,7 +44,6 @@ class SubscriptionService {
                 where: { userId },
             });
         } catch (error) {
-            console.error("Erro ao cancelar assinatura:", error);
             throw new Error("Erro ao cancelar assinatura");
         }
     }
@@ -62,7 +58,6 @@ class SubscriptionService {
                 },
             });
         } catch (error) {
-            console.error("Erro ao adicionar pagamento:", error);
             throw new Error("Erro ao adicionar pagamento");
         }
     }

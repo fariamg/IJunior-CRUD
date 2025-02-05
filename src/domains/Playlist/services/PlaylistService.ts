@@ -12,7 +12,6 @@ class PlaylistService {
                 },
             });
         } catch (error) {
-            console.error("Erro ao criar playlist:", error);
             throw new Error("Erro ao criar playlist");
         }
     }
