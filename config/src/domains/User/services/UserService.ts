@@ -1,11 +1,44 @@
 import { User} from "@prisma/client";
 import prisma from "../../../../../config/prismaClient";
+import { QueryError } from "../../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../../errors/InvalidParamError";
 
 
 class UserService {
 
     // C - CRUD - Criação de um novo usuário
     async createUser(body: User) {
+        
+        //Verificar se existe usuário com determinado email
+        const checkUser = await prisma.user.findUnique({
+            where: {
+                email: body.email
+            }
+
+        });
+        if(checkUser){
+            throw new QueryError("Esse email já está cadastrado!");
+        }
+
+        //Verificar se alguns elementos não são nulos
+        if(body.email == null){
+            throw new InvalidParamError("Email não informado!")
+        }
+        if(body.password == null){
+            throw new InvalidParamError("Senha não informada!")
+        }
+        if(body.fullName == null){
+            throw new InvalidParamError("Nome completo não informado!")
+        }
+        
+        //Restringe o parâmetro a seguir determinado padrão de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(body.email)) {
+            throw new InvalidParamError("Formato de email inválido!");
+        }
+
+        // Criação do objeto
+
         const user = await prisma.user.create({
             data: {
                 fullName: body.fullName,
@@ -31,6 +64,9 @@ class UserService {
         const user = await prisma.user.findUnique({
             where: { email: wantedEmail }
         });
+        if(!user){
+            throw new QueryError(`Email ${wantedEmail} não encontrado!`);
+        }
         return user;
     }
     
@@ -40,17 +76,18 @@ class UserService {
         });
     
         if (!user) {
-            throw new Error(`Id  ${id} não encontrado`);
+            throw new QueryError(`Id ${id} não encontrado`);
         }
-    
         return user;
+        
     }
 
   
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {
-        const user = await this.getUserbyId(id); 
+        
+        await this.getUserbyId(id); //usado para verificar se existe usuário com esse ID
 
         const updatedUser = await prisma.user.update({
             data: {
@@ -69,11 +106,11 @@ class UserService {
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number) {
-		const user = await this.getUserbyId(wantedId);
-	    if (user) {
-			await prisma.user.delete(({ where: { id: wantedId } }));
-		} 
-	}
+		
+        await this.getUserbyId(wantedId);
+        await prisma.user.delete(({ where: { id: wantedId } }));
+	
+    }
     
     async deleteAll() {
         const deletedUsers = await prisma.user.deleteMany();
