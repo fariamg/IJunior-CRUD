@@ -2,54 +2,58 @@ import { Like } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 
 class LikeService {
-
-    async createLike(body: Like) {
-        const like = await prisma.like.create({
-            data: {
-                userId: body.userId,
-                musicId: body.musicId,
-            }
-        });
-        return like
+    async createLike(body: Omit<Like, 'id'>) {
+        try {
+            return await prisma.like.create({
+                data: {
+                    userId: body.userId,
+                    musicId: body.musicId,
+                },
+            });
+        } catch (error) {
+            console.error("Erro ao criar like:", error);
+            throw new Error("Erro ao criar like");
+        }
     }
 
     async getLikesByUserId(userId: number) {
-        const likes = await prisma.like.findMany({
-            where: { userId },
-            include: {
-                music: true
-            }
-        });
-
-        return likes;
+        return this.findLikes({ userId }, { music: true });
     }
 
     async getLikesByMusicId(musicId: number) {
-        const likes = await prisma.like.findMany({
-            where: { musicId }
-        });
-
-        return likes;
+        return this.findLikes({ musicId });
     }
 
     async getMusicLikesCount(musicId: number) {
-        const likes = await prisma.like.count({
-            where: { musicId }
-        });
-
-        return likes;
+        try {
+            return await prisma.like.count({ where: { musicId } });
+        } catch (error) {
+            console.error("Erro ao contar likes da música:", error);
+            throw new Error("Erro ao contar likes");
+        }
     }
 
     async deleteLike(userId: number, musicId: number) {
-        const like = await prisma.like.delete({
-            where: {
-                userId_musicId: {
-                    userId,
-                    musicId
-                }
-            }
-        });
+        try {
+            return await prisma.like.delete({
+                where: {
+                    userId_musicId: { userId, musicId },
+                },
+            });
+        } catch (error) {
+            console.error("Erro ao deletar like:", error);
+            throw new Error("Erro ao deletar like");
+        }
+    }
 
-        return like;
+    private async findLikes(where: object, include?: object) {
+        try {
+            return await prisma.like.findMany({ where, include });
+        } catch (error) {
+            console.error("Erro ao buscar likes:", error);
+            throw new Error("Erro ao buscar likes");
+        }
     }
 }
+
+export default new LikeService();
