@@ -26,6 +26,7 @@ model User {
   createdAt DateTime? @default(now())
   updatedAt DateTime? @updatedAt
   isActive  Boolean @default(true)
+  playlists Playlist[]
 
   @@map("users")
 }
@@ -51,6 +52,7 @@ model Music {
   recordDate  DateTime
   createdAt   DateTime? @default(now())
   artists     Artist[] 
+  playlists   Playlist[]
 
   @@map("musics")
 }
@@ -62,5 +64,16 @@ model Country {
   artists   Artist[]
 
   @@map("countries")
+}
+
+model Playlist {
+  id        Int @id @default(autoincrement())
+  name      String
+  musics    Music[]
+  creators  User[]
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+
+  @@map("playlists")
 }
 
