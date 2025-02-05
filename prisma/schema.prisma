@@ -1,8 +1,14 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 enum Role {
   USER
   ADMIN
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
 }
 
 generator client {
@@ -14,84 +20,97 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-
 model User {
-  id             Int        @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   fullName       String
-  email          String     @unique
+  email          String       @unique
   photo          String?
   password       String
-  role           Role       @default(USER)
+  role           Role         @default(USER)
   countryId      Int
-  country        Country    @relation(fields: [countryId], references: [id])
-  createdAt      DateTime?  @default(now())
-  updatedAt      DateTime?  @updatedAt
-  isActive       Boolean    @default(true)
-  playlists      Playlist[] @relation("UserPlaylists")
-  collaborations Playlist[] @relation("PlaylistCollaborators")
+  country        Country      @relation(fields: [countryId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  isActive       Boolean      @default(true)
+  playlists      Playlist[]   @relation("UserPlaylists")
+  collaborations Playlist[]   @relation("PlaylistCollaborators")
   likes          Like[]
+  subscription   Subscription?
 
   @@map("users")
 }
 
 model Artist {
-  id        Int @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   photo     String?
   bio       String?
-  listeners Int
-  createdAt DateTime? @default(now())
+  listeners Int       @default(0)
+  createdAt DateTime  @default(now())
   musics    Music[]
   countryId Int
-  country   Country @relation(fields: [countryId], references: [id])
+  country   Country   @relation(fields: [countryId], references: [id])
 
   @@map("artists")
 }
 
 model Music {
-  id          Int @id @default(autoincrement())
-  name        String
-  duration    Int
-  recordDate  DateTime
-  createdAt   DateTime? @default(now())
-  artists     Artist[] 
-  playlists   Playlist[]
-  likes       Like[]
-  likeCount   Int @default(0)
+  id         Int       @id @default(autoincrement())
+  name       String
+  duration   Int
+  recordDate DateTime
+  createdAt  DateTime  @default(now())
+  artists    Artist[]
+  playlists  Playlist[]
+  likes      Like[]
+  likeCount  Int       @default(0)
 
   @@map("musics")
 }
+
 model Country {
-  id        Int @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
   continent String
-  users     User[] 
+  users     User[]
   artists   Artist[]
 
   @@map("countries")
 }
 
 model Playlist {
-  id            Int @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   name          String
   musics        Music[]
   creatorId     Int
   creator       User       @relation(fields: [creatorId], references: [id], name: "UserPlaylists")
   collaborators User[]     @relation("PlaylistCollaborators")
-  createdAt     DateTime? @default(now())
-  updatedAt     DateTime? @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 
   @@map("playlists")
 }
 
 model Like {
   id       Int      @id @default(autoincrement())
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  musicId   Int
-  music     Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
-  createdAt DateTime? @default(now())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  musicId  Int
+  music    Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
-  @@unique([userId, musicId]) 
+  @@unique([userId, musicId])
   @@map("likes")
+}
+
+model Subscription {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      SubscriptionType
+  duration  Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("subscriptions")
 }
