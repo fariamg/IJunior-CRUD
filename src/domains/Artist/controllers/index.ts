@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import ArtistService from "../services/ArtistService"; // O caminho pode variar dependendo da sua estrutura
+import ArtistService from "../services/ArtistService";
 
 const router = Router();
 
@@ -21,10 +21,8 @@ router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => 
     try {
         const user = await ArtistService.getArtistbyId(Number(req.params.id));
         res.json(user);
-        
     } catch (error) {
         next(error);
-        
     }
 });
 
@@ -36,9 +34,6 @@ router.get("/name/:name" , async (req: Request, res: Response, next: NextFunctio
         next(error)
     }
 });
-
-
-
 
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)

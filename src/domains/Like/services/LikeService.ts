@@ -2,16 +2,36 @@ import { Like } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 
 class LikeService {
-    async createLike(body: Omit<Like, 'id'>) {
+    async likeMusic(userId: number, musicId: number) {
         try {
-            return await prisma.like.create({
-                data: {
-                    userId: body.userId,
-                    musicId: body.musicId,
-                },
+            const like = await prisma.like.create({
+                data: { userId, musicId },
             });
+    
+            await prisma.music.update({
+                where: { id: musicId },
+                data: { likeCount: { increment: 1 } },
+            });
+        return { success: true, data: like };
         } catch (error) {
-            throw new Error("Erro ao criar like");
+        return { success: false, error: "Erro ao curtir a música." };
+        }
+    }
+
+    async getMusicLikeCount(musicId: number) {
+        try {
+            const music = await prisma.music.findUnique({
+                where: { id: musicId },
+                select: { likeCount: true },
+            });
+    
+            if (!music) {
+                return { success: false, error: "Música não encontrada." };
+            }
+    
+            return { success: true, data: { musicId, likeCount: music.likeCount } };
+        } catch (error) {
+            return { success: false, error: "Erro ao buscar contador de likes." };
         }
     }
 
@@ -23,13 +43,6 @@ class LikeService {
         return this.findLikes({ musicId });
     }
 
-    async getMusicLikesCount(musicId: number) {
-        try {
-            return await prisma.like.count({ where: { musicId } });
-        } catch (error) {
-            throw new Error("Erro ao contar likes");
-        }
-    }
 
     async deleteLike(userId: number, musicId: number) {
         try {
