@@ -89,6 +89,16 @@ class UserService {
         
         await this.getUserbyId(id); //usado para verificar se existe usuário com esse ID
 
+        if(body.email == null){
+            throw new InvalidParamError("Email não pode ser nulo!")
+        }
+        if(body.password == null){
+            throw new InvalidParamError("Senha não pode ser nula!")
+        }
+        if(body.fullName == null){
+            throw new InvalidParamError("Nome completo não pode ser nulo!")
+        }
+
         const updatedUser = await prisma.user.update({
             data: {
                 fullName:body.fullName,
