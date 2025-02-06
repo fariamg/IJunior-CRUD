@@ -1,9 +1,26 @@
-import { Artist, Music } from "@prisma/client";
+import { Music } from "@prisma/client";
 import prisma from "../../../../../config/prismaClient";
+import { QueryError } from "../../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../../errors/InvalidParamError";
 
 class MusicService {
 
     async createMusic(body: Music, artistIds: number[]) {
+
+        //Verificar se alguns elementos não são nulos
+        if(body.name == null){
+            throw new InvalidParamError("Nome da música não informado!")
+        }
+        if(body.duration == null){
+            throw new InvalidParamError("Duração da música não informada!")
+        }
+        if(body.recordDate == null){
+            throw new InvalidParamError("Data de gravação da música não informada!")
+        }
+        if(artistIds == null){
+            throw new InvalidParamError("ID do(s) artista(s) não informado(s)!")
+        }
+
         const music = await prisma.music.create({
             data: {
                 name: body.name,
@@ -33,7 +50,7 @@ class MusicService {
         });
 
         if (!music) {
-            throw new Error(`Id  ${id} não encontrado`);
+            throw new QueryError(`Id  ${id} não encontrado`);
         }
 
         return music;
@@ -45,14 +62,25 @@ class MusicService {
         });
 
         if (!music) {
-            throw new Error(`Nome  ${name} não encontrado`);
+            throw new QueryError(`Nome  ${name} não encontrado`);
         }
 
         return music;
     }
 
     async updateMusic(id: number, body: Music) {
-        const music = await this.getMusicbyId(id);
+        
+        await this.getMusicbyId(id);
+
+        if(body.name == null){
+            throw new InvalidParamError("Nome da música não pode ser nulo!")
+        }
+        if(body.duration == null){
+            throw new InvalidParamError("Duração da música não pode ser nulo!")
+        }
+        if(body.recordDate == null){
+            throw new InvalidParamError("Data de gravação da música não pode ser nula!")
+        }
 
         const updatedMusic = await prisma.music.update({
             data: {
@@ -68,7 +96,8 @@ class MusicService {
     }
 
     async deleteMusic(id: number) {
-        const music = await this.getMusicbyId(id);
+        
+        await this.getMusicbyId(id);
 
         const deletedMusic = await prisma.music.delete({
             where: {

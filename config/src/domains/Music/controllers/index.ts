@@ -1,5 +1,7 @@
 import { Router , Request, Response, NextFunction} from "express";
 import MusicService from "../services/MusicService";
+import statusCodes from "../../../../../utils/constants/statusCodes";
+
 
 const router = Router();
 
@@ -7,7 +9,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const musics = await MusicService.getMusics();
-        res.json(musics);
+        res.status(statusCodes.SUCCESS).json(musics);
 
     } catch (error) {
         next(error);
@@ -17,7 +19,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyId(Number(req.params.id));
-        res.json(music);
+        res.status(statusCodes.SUCCESS).json(music);
         
     } catch (error) {
         next(error);
@@ -27,7 +29,7 @@ router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => 
 router.get("/name/:name", async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyName(req.params.name);
-        res.json(music);
+        res.status(statusCodes.SUCCESS).json(music);
         
     } catch (error) {
         next(error);
@@ -39,15 +41,10 @@ router.get("/name/:name", async(req: Request, res: Response, next: NextFunction)
 // ROTA PARA CRIAR OBJETO
 router.post("/create", async function createMusic(req: Request, res: Response, next: NextFunction) {
     try {
-        const { name, duration, recordDate , artistIds } = req.body;
         
-        if (!name ||!artistIds || !duration || !recordDate) {
-            return res.status(400).json({ message: "Todos os campos obrigatórios devem ser preenchidos!" });
-        }
-
         const music = await MusicService.createMusic(req.body, req.body.artistIds);
+        res.status(statusCodes.CREATED).json(music);
 
-        return res.status(201).json(music);
     } catch (error) {
         next(error);
     }
@@ -57,12 +54,11 @@ router.post("/create", async function createMusic(req: Request, res: Response, n
 router.put("/update/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
-        const { id } = req.params; 
 
         // Passando tanto o id quanto o body para o método updateUser
-        const user = await MusicService.updateMusic(Number(id), req.body);
+        const music = await MusicService.updateMusic(req.body.id, req.body);
 
-        res.status(200).json(user); // Use o status 200 para sucesso na atualização
+        res.status(statusCodes.SUCCESS).json(music); // Use o status 200 para sucesso na atualização
     } catch (error) {
         next(error);
     }
@@ -72,13 +68,11 @@ router.put("/update/:id", async function createMusic(req: Request, res: Response
 router.delete("/delete/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
-        const { id } = req.params;  
         
-        await MusicService.deleteMusic(Number(id));
+        await MusicService.deleteMusic(req.body.Id);
 
-        res.status(200).json({
-            message: `Música com ID ${id} deletado com sucesso!`,
-            
+        res.status(statusCodes.SUCCESS).json({
+            message: `Música com ID ${req.body.id} deletado com sucesso!`,
         }); 
 
     } catch (error) {
@@ -86,6 +80,4 @@ router.delete("/delete/:id", async function createMusic(req: Request, res: Respo
     }
 });
 
-
-// TODO: adicionar função de filtrar por países 
 export default router;
