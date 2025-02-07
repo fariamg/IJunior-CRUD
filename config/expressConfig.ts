@@ -3,10 +3,9 @@ import dotenv from "dotenv";
 import express, { Express }  from  "express";
 import UserRouter from "../src/domains/User/controllers/index";
 import MusicRouter from "../src/domains/Music/controllers/index"
-import ArtistRouter from "../src/domains/Artist/controllers/index"
+import ArtistRouter from "../src/domains/Artist/controllers/ArtistController"
+
 dotenv.config();
-
-
 
 export const app: Express = express();
 

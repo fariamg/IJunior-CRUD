@@ -17,10 +17,7 @@ class ArtistService {
     }
 
     async getArtists() {
-        const artists = await prisma.artist.findMany({ 
-            orderBy: { name: 'asc' },
-            include: { musics: true }
-        });
+        const artists = await prisma.artist.findMany();
         return artists;
     }
 
