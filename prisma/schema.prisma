@@ -77,7 +77,7 @@ model Music {
 
 model Country {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique
   continent String
   users     User[]
   artists   Artist[]
