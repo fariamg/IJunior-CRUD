@@ -51,6 +51,21 @@ class ArtistService {
         return artist;
     }
 
+    async getArtistsbyCountry(country: string) {
+        const artists = await prisma.artist.findMany({
+            where: {
+                country: {
+                    name: country
+                }
+            },
+        });
+    
+        if (!artists.length) {
+            throw new Error(`País ${country} não encontrado`);
+        }
+        return artists;
+    }
+
     async updateArtist(id: number, body: Artist) {
         const artist = await this.getArtistbyId(id);
 
@@ -77,7 +92,6 @@ class ArtistService {
             }
         });
 
-        
 
         return deletedArtist;
     }
