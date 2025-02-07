@@ -1,16 +1,17 @@
 import { Router, Request, Response, NextFunction} from "express";
 import UserService from "../services/UserService";
 import statusCodes from "../../../../../utils/constants/statusCodes";
-import { login, verifyJWT } from "../../middlewares/auth";
-
+import { checkRole, login, logout, verifyJWT } from "../../middlewares/auth";
+import { userRoles } from "../../../../../utils/constants/userRoles";
 
 const router = Router();
 
 router.post("/login", login);
+router.post("/logout", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), logout);
 // router.post("/logout", verifyJWT, logout)
 
 // ROTAS PARA LEITURA (GET) //
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/",verifyJWT, checkRole([userRoles.ADMIN]),  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await UserService.getUsers();
         res.status(statusCodes.SUCCESS).json(users);
@@ -21,7 +22,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     
 });
 
-router.get("/id/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
+router.get("/id/:id", verifyJWT, checkRole([userRoles.ADMIN]), async(req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await UserService.getUserbyId(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(user);
@@ -32,7 +33,7 @@ router.get("/id/:id", verifyJWT, async(req: Request, res: Response, next: NextFu
     }
 });
 
-router.get("/email/:email", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/email/:email", verifyJWT,  checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const email = req.params.email;  // Aqui pegamos o email da URL
         const user = await UserService.getUserbyEmail(email);
@@ -59,7 +60,7 @@ router.post("/create", async function createUser(req: Request, res: Response, ne
 });
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/update/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.put("/update/:id", verifyJWT, async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
          // Passando tanto o id quanto o body para o método updateUser
@@ -71,13 +72,13 @@ router.put("/update/:id", async function createUser(req: Request, res: Response,
     }
 });
 
-router.delete("/delete/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.delete("/delete/:id", verifyJWT, checkRole([userRoles.ADMIN]),  async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
         
-        await UserService.deleteUser(Number(req.body.id));
+        await UserService.deleteUser(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json({
-            message: `Usuário com ID ${req.body.id} deletado com sucesso!`,
+            message: `Usuário com ID ${req.params.id} deletado com sucesso!`,
         }); 
 
     } catch (error) {
