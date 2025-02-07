@@ -2,9 +2,16 @@ import { User} from "@prisma/client";
 import prisma from "../../../../../config/prismaClient";
 import { QueryError } from "../../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../../errors/InvalidParamError";
-
+import bcrypt from "bcrypt";
 
 class UserService {
+
+    async encryptPassword(password: string){
+        const saltRounds = 10;
+        const encrypted = await bcrypt.hash(password, saltRounds);
+        return encrypted;
+
+    }
 
     // C - CRUD - Criação de um novo usuário
     async createUser(body: User) {
@@ -37,6 +44,9 @@ class UserService {
             throw new InvalidParamError("Formato de email inválido!");
         }
 
+
+        const encrypted = await this.encryptPassword(body.password);
+
         // Criação do objeto
 
         const user = await prisma.user.create({
@@ -44,7 +54,7 @@ class UserService {
                 fullName: body.fullName,
                 email: body.email,
                 photo: body.photo,
-                password: body.password,
+                password: encrypted,
                 role: body.role,
 
             }

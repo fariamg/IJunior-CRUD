@@ -1,10 +1,13 @@
 import { Router, Request, Response, NextFunction} from "express";
 import UserService from "../services/UserService";
 import statusCodes from "../../../../../utils/constants/statusCodes";
+import { login, verifyJWT } from "../../middlewares/auth";
 
 
 const router = Router();
 
+router.post("/login", login);
+// router.post("/logout", verifyJWT, logout)
 
 // ROTAS PARA LEITURA (GET) //
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
@@ -18,7 +21,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     
 });
 
-router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => {
+router.get("/id/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
     try {
         const user = await UserService.getUserbyId(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(user);
