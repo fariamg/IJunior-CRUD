@@ -61,68 +61,83 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction){
 
 export async function login(req: Request, res: Response, next: NextFunction){
     try {
-        
+
+        const token = cookieExtractor(req);
+
+        if (token) {
+      
+            return res.status(statusCodes.FORBIDDEN).json("Você já está logado!");
+        }
         const user = await prisma.user.findUnique({
             where: {
                 email: req.body.email
-
             }
         });
 
         if(!user){
+            console.log("Usuário não encontrado com o email:", req.body.email);
             throw new PermissionError("Email e/ou senha incorretos!");
         }
-    
+
+        const match = await compare(req.body.password, user.password);
         
-        const match = compare(req.body.password, user.password);
-        
-     
-       
         if(!match){
+           
             throw new PermissionError("Email e/ou senha incorretos!");
         }
-        
+
         generateJWT(user, res);
-        
         res.status(statusCodes.SUCCESS).json("Login realizado com sucesso!");
     } catch (error) {
         next(error);
-        
     }
-
-
 };
 
-// export async function logout(req: Request, res: Response, next: NextFunction){
-//     try {
-//         res.clearCookie("jwt", {
-//             httpOnly: true,
-//             secure: process.env.NODE_ENV !== "development"
-//         });
+
+export async function logout(req: Request, res: Response, next: NextFunction){
+    try {
+        res.clearCookie("jwt", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== "development"
+        });
         
-//         res.status(statusCodes.SUCCESS).json("Logout realizadfo com sucesso!");
-//     } catch (error) {
-//         next(error);
-//     }
+        res.status(statusCodes.SUCCESS).json("Logout realizado com sucesso!");
+    } catch (error) {
+        next(error);
+    }
 
-// }
+}
 
 
 
-// export async function notLoggedIn(req: Request, res: Response, next: NextFunction){
-//     try {
+export async function notLoggedIn(req: Request, res: Response, next: NextFunction){
+    try {
         
-//         const token = cookieExtractor(req);
+        const token = cookieExtractor(req);
         
-//         if(!token){
-//             throw new TokenError("Você precisa estar logado para realizar essa ação!");
-//         }
-//     } catch (error) {
-//         next(error);
-//     }
+        if(!token){
+            throw new TokenError("Você precisa estar logado para realizar essa ação!");
+        }
+    } catch (error) {
+        next(error);
+    }
 
-// }
+}
 
-// export function checkRole(){
+export function checkRole(requiredRoles: string[]) {
+    
+    return async (req: Request, res: Response, next: NextFunction) => {
+        const token = cookieExtractor(req);
+        try {
+            const decoded = verify(token, process.env.SECRET_KEY || "") as JwtPayload;
+            const user = decoded.user;
 
-// }
+            if (!requiredRoles.includes(user.role)) {
+                return res.status(statusCodes.UNAUTHORIZED).json("Você não está autorizado a fazer isso.");
+            }
+            next();
+        } catch (error) {
+            next(error);
+        }
+    };
+}
