@@ -37,7 +37,7 @@ router.get("/name/:name", async(req: Request, res: Response, next: NextFunction)
 
 
 // ROTA PARA CRIAR OBJETO
-router.post("/create", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.post("/", async function createMusic(req: Request, res: Response, next: NextFunction) {
     try {
         const { name, duration, recordDate , artistIds } = req.body;
         
@@ -54,7 +54,7 @@ router.post("/create", async function createMusic(req: Request, res: Response, n
 });
 
 //ROTA PARA ATUALIZAR OBJETO MUSICA
-router.put("/update/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.put("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
         const { id } = req.params; 
@@ -69,7 +69,7 @@ router.put("/update/:id", async function createMusic(req: Request, res: Response
 });
 
 //ROTA PARA DELETAR OBJETO MUSICA
-router.delete("/delete/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
         const { id } = req.params;  
@@ -87,5 +87,4 @@ router.delete("/delete/:id", async function createMusic(req: Request, res: Respo
 });
 
 
-// TODO: adicionar função de filtrar por países 
 export default router;
