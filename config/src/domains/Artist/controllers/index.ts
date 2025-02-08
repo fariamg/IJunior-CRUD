@@ -54,7 +54,7 @@ router.post("/create", async function createArtist(req: Request, res: Response, 
 });
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/update/:id", async function createartist(req: Request, res: Response, next: NextFunction) {
+router.put("/update/:id", async function createArtist(req: Request, res: Response, next: NextFunction) {
     
     try {
 
