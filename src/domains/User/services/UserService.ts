@@ -13,7 +13,11 @@ class UserService {
                 photo: body.photo,
                 password: body.password,
                 role: body.role,
-
+                country: {
+                    connect: {
+                        id: body.countryId
+                    }
+                }
             }
         });
         return user;
@@ -22,14 +26,20 @@ class UserService {
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
         const users = await prisma.user.findMany( {
-            orderBy: { createdAt: 'asc'}
+            orderBy: { createdAt: 'asc'},
+            include: {
+                country: true
+            }
         }); 
         return users;
     }
 
     async getUserbyEmail(wantedEmail: string) {
         const user = await prisma.user.findUnique({
-            where: { email: wantedEmail }
+            where: { email: wantedEmail },
+            include: {
+                country: true
+            }
         });
         return user;
     }
@@ -37,6 +47,9 @@ class UserService {
     async getUserbyId(id: number) {
         const user = await prisma.user.findUnique({
             where: { id },
+            include: {
+                country: true
+            }
         });
     
         if (!user) {
@@ -46,7 +59,6 @@ class UserService {
         return user;
     }
 
-  
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {

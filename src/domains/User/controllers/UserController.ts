@@ -42,7 +42,7 @@ router.get("/email/:email", async (req: Request, res: Response, next: NextFuncti
 
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)
-router.post("/create", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.post("/", async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         const { fullName, email, photo, password, role } = req.body;
 
@@ -59,7 +59,7 @@ router.post("/create", async function createUser(req: Request, res: Response, ne
 });
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/update/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.put("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
         const { fullName, email, photo, password, role } = req.body;
@@ -74,7 +74,7 @@ router.put("/update/:id", async function createUser(req: Request, res: Response,
     }
 });
 
-router.delete("/delete/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
 

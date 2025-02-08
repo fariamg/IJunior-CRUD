@@ -1,7 +1,7 @@
 import cors, { CorsOptions } from "cors";
 import dotenv from "dotenv";
 import express, { Express }  from  "express";
-import UserRouter from "../src/domains/User/controllers/index";
+import UserRouter from "../src/domains/User/controllers/UserController";
 import MusicRouter from "../src/domains/Music/controllers/index"
 import ArtistRouter from "../src/domains/Artist/controllers/ArtistController"
 import CountryRouter from "../src/domains/Country/controllers/CountryController"
