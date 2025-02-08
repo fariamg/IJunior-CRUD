@@ -16,6 +16,16 @@ class SubscriptionService {
         }
     }
 
+    async getAllSubscriptions() {
+        try {
+            return await prisma.subscription.findMany({
+                include: { payments: true },
+            });
+        } catch (error) {
+            throw new Error("Erro ao buscar assinaturas");
+        }
+    }
+
     async getSubscriptionByUserId(userId: number) {
         try {
             return await prisma.subscription.findUnique({
@@ -45,20 +55,6 @@ class SubscriptionService {
             });
         } catch (error) {
             throw new Error("Erro ao cancelar assinatura");
-        }
-    }
-
-    async addPayment(userId: number, amount: number, status: Status) {
-        try {
-            return await prisma.payment.create({
-                data: {
-                    userId,
-                    amount,
-                    status,
-                },
-            });
-        } catch (error) {
-            throw new Error("Erro ao adicionar pagamento");
         }
     }
 }
