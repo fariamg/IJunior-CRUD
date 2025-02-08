@@ -20,28 +20,11 @@ class LikeService {
     
     async getLikes() {
         try {
-            return await prisma.like.findMany();
+            return await prisma.like.findMany({ include: { music: true, user: true } });
         } catch (error) {
             throw new Error("Erro ao buscar likes");
         }
     }
-    async getMusicLikeCount(musicId: number) {
-        try {
-            const music = await prisma.music.findUnique({
-                where: { id: musicId },
-                select: { likeCount: true },
-            });
-    
-            if (!music) {
-                return { success: false, error: "Música não encontrada." };
-            }
-    
-            return { success: true, data: { musicId, likeCount: music.likeCount } };
-        } catch (error) {
-            return { success: false, error: "Erro ao buscar contador de likes." };
-        }
-    }
-
     async getLikesByUserId(userId: number) {
         return this.findLikes({ userId }, { music: true });
     }

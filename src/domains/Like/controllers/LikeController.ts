@@ -33,16 +33,6 @@ router.get("/music/:musicId", async (req: Request, res: Response, next: NextFunc
     }
 });
 
-// ROTA PARA OBTER QUANTIDADE DE LIKES POR MUSICA
-router.get("/music/count/:musicId", async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const likes = await LikeService.getMusicLikeCount(Number(req.params.musicId));
-        res.json(likes);
-    } catch (error) {
-        next(error);
-    }
-});
-
 // ROTA PARA CRIAR UM NOVO LIKE
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
