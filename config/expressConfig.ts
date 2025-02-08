@@ -5,6 +5,7 @@ import UserRouter from "../src/domains/User/controllers/UserController";
 import MusicRouter from "../src/domains/Music/controllers/index"
 import ArtistRouter from "../src/domains/Artist/controllers/ArtistController"
 import CountryRouter from "../src/domains/Country/controllers/CountryController"
+import LikeRouter from "../src/domains/Like/controllers/LikeController"
 
 dotenv.config();
 
@@ -24,4 +25,5 @@ app.use("/api/users", UserRouter);
 app.use("/api/music", MusicRouter);
 app.use("/api/artists", ArtistRouter);
 app.use("/api/countries", CountryRouter);
+app.use("/api/likes", LikeRouter);
 // configurar rota de user.

@@ -2,7 +2,7 @@ import { Like } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 
 class LikeService {
-    async likeMusic(userId: number, musicId: number) {
+    async createLike(userId: number, musicId: number) {
         try {
             const like = await prisma.like.create({
                 data: { userId, musicId },
@@ -17,7 +17,14 @@ class LikeService {
         return { success: false, error: "Erro ao curtir a música." };
         }
     }
-
+    
+    async getLikes() {
+        try {
+            return await prisma.like.findMany();
+        } catch (error) {
+            throw new Error("Erro ao buscar likes");
+        }
+    }
     async getMusicLikeCount(musicId: number) {
         try {
             const music = await prisma.music.findUnique({
@@ -63,6 +70,7 @@ class LikeService {
             throw new Error("Erro ao buscar likes");
         }
     }
+
 }
 
 export default new LikeService();
