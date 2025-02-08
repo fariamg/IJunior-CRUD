@@ -10,20 +10,30 @@ class ArtistService {
                 photo: body.photo,
                 bio: body.bio,
                 listeners: body.listeners,
-            
+                country: {
+                    connect: {
+                        id: body.countryId
+                    },
+                }
             }
         });
         return artist
     }
 
     async getArtists() {
-        const artists = await prisma.artist.findMany();
+        const artists = await prisma.artist.findMany({
+            include: {
+            country: true
+        }});
         return artists;
     }
 
     async getArtistbyId(id: number) {
         const artist = await prisma.artist.findUnique({
             where: { id },
+            include: {
+                country: true
+            }
         });
 
         if (!artist) {
@@ -37,8 +47,10 @@ class ArtistService {
         const artist = await prisma.artist.findFirst({
             where: { name: {
                 equals: name },
-
             },
+            include: {
+                country: true
+            }
         });
 
         if (!artist) {
@@ -55,6 +67,9 @@ class ArtistService {
                     name: country
                 }
             },
+            include: {
+                country: true
+            }
         });
     
         if (!artists.length) {
