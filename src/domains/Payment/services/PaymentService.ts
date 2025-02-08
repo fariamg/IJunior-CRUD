@@ -17,6 +17,16 @@ class PaymentService {
         }
     }
 
+    async getPayments() {
+        try {
+            return await prisma.payment.findMany({
+                include: { user: true, subscription: true },
+            });
+        } catch (error) {
+            throw new Error("Erro ao buscar pagamentos");
+        }
+    }
+
     async getPaymentsByUserId(userId: number) {
         try {
             return await prisma.payment.findMany({
@@ -50,7 +60,7 @@ class PaymentService {
         }
     }
 
-    async deletePayment(paymentId: number) {
+    private async deletePayment(paymentId: number) {
         try {
             return await prisma.payment.delete({
                 where: { id: paymentId },
