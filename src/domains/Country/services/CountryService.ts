@@ -67,11 +67,6 @@ class CountryService {
             });
         }
     }
-
-    async delleteAll() {
-        const deletedCountries = await prisma.country.deleteMany();
-        return deletedCountries;
-    }
 }
 
 export default new CountryService();
