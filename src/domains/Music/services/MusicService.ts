@@ -1,7 +1,7 @@
-import { Music } from "@prisma/client";
-import prisma from "../../../../../config/prismaClient";
-import { QueryError } from "../../../../../errors/QueryError";
-import { InvalidParamError } from "../../../../../errors/InvalidParamError";
+import { QueryError } from "../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import { Artist, Music } from "@prisma/client";
+import prisma from "../../../../config/prismaClient";
 
 class MusicService {
 

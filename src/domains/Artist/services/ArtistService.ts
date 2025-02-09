@@ -1,14 +1,14 @@
 import { Artist } from '@prisma/client';
-import prisma from '../../../../../config/prismaClient';
-import { QueryError } from "../../../../../errors/QueryError";
-import { InvalidParamError } from "../../../../../errors/InvalidParamError";
+import prisma from '../../../../config/prismaClient';
+import { QueryError } from "../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
 
 class ArtistService {
 
     async createArtist(body: Artist) {
 
          //Verificar se alguns elementos não são nulos
-         if(body.name == null){
+        if(body.name == null){
             throw new InvalidParamError("Nome do artista não informado!")
         }
         
@@ -18,24 +18,30 @@ class ArtistService {
                 photo: body.photo,
                 bio: body.bio,
                 listeners: body.listeners,
+                country: {
+                    connect: {
+                        id: body.countryId
+                    },
+                }
             }
         });
         return artist
     }
 
     async getArtists() {
-        const artists = await prisma.artist.findMany({ 
-            orderBy: { name: 'asc' },
-            include: { musics: true }
-        });
+        const artists = await prisma.artist.findMany({
+            include: {
+            country: true
+        }});
         return artists;
     }
-
-
 
     async getArtistbyId(id: number) {
         const artist = await prisma.artist.findUnique({
             where: { id },
+            include: {
+                country: true
+            }
         });
 
         if (!artist) {
@@ -50,6 +56,9 @@ class ArtistService {
             where: { name: {
                 equals: name },
             },
+            include: {
+                country: true
+            }
         });
 
         if (!artist) {
@@ -57,6 +66,24 @@ class ArtistService {
         }
 
         return artist;
+    }
+
+    async getArtistsbyCountry(country: string) {
+        const artists = await prisma.artist.findMany({
+            where: {
+                country: {
+                    name: country
+                }
+            },
+            include: {
+                country: true
+            }
+        });
+    
+        if (!artists.length) {
+            throw new Error(`País ${country} não encontrado`);
+        }
+        return artists;
     }
 
     async updateArtist(id: number, body: Artist) {
@@ -90,7 +117,6 @@ class ArtistService {
             }
         });
 
-        
 
         return deletedArtist;
     }

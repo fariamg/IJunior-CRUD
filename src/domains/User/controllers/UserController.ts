@@ -1,8 +1,8 @@
 import { Router, Request, Response, NextFunction} from "express";
 import UserService from "../services/UserService";
-import statusCodes from "../../../../../utils/constants/statusCodes";
+import statusCodes from "../../../../utils/constants/statusCodes";
 import { checkRole, login, logout, verifyJWT } from "../../middlewares/auth";
-import { userRoles } from "../../../../../utils/constants/userRoles";
+import { userRoles } from "../../../../utils/constants/userRoles";
 
 const router = Router();
 
@@ -44,10 +44,8 @@ router.get("/email/:email", verifyJWT,  checkRole([userRoles.ADMIN]), async (req
 });
 
 
-
-
 // ROTA PARA CRIAR UM USUÁRIO (POST)
-router.post("/create", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.post("/", async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         
         const user = await UserService.createUser(req.body); // Passando req.body diretamente
@@ -60,7 +58,7 @@ router.post("/create", async function createUser(req: Request, res: Response, ne
 });
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/update/:id", verifyJWT, async function createUser(req: Request, res: Response, next: NextFunction) {
+router.put("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
          // Passando tanto o id quanto o body para o método updateUser
@@ -72,8 +70,7 @@ router.put("/update/:id", verifyJWT, async function createUser(req: Request, res
     }
 });
 
-router.delete("/delete/:id", verifyJWT, checkRole([userRoles.ADMIN]),  async function createUser(req: Request, res: Response, next: NextFunction) {
-    
+router.delete("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         
         await UserService.deleteUser(Number(req.params.id));

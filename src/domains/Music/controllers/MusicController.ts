@@ -1,6 +1,6 @@
 import { Router , Request, Response, NextFunction} from "express";
 import MusicService from "../services/MusicService";
-import statusCodes from "../../../../../utils/constants/statusCodes";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 
 const router = Router();
@@ -39,7 +39,7 @@ router.get("/name/:name", async(req: Request, res: Response, next: NextFunction)
 
 
 // ROTA PARA CRIAR OBJETO
-router.post("/create", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.post("/", async function createMusic(req: Request, res: Response, next: NextFunction) {
     try {
         
         const music = await MusicService.createMusic(req.body, req.body.artistIds);
@@ -51,7 +51,7 @@ router.post("/create", async function createMusic(req: Request, res: Response, n
 });
 
 //ROTA PARA ATUALIZAR OBJETO MUSICA
-router.put("/update/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.put("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
 
@@ -65,7 +65,7 @@ router.put("/update/:id", async function createMusic(req: Request, res: Response
 });
 
 //ROTA PARA DELETAR OBJETO MUSICA
-router.delete("/delete/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
         

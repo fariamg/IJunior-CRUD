@@ -1,11 +1,11 @@
-import { User} from "@prisma/client";
-import prisma from "../../../../../config/prismaClient";
-import { QueryError } from "../../../../../errors/QueryError";
-import { InvalidParamError } from "../../../../../errors/InvalidParamError";
+import { User } from "@prisma/client";
+import { QueryError } from "../../../../errors/QueryError";
+import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import bcrypt from "bcrypt";
+import prisma from "../../../../config/prismaClient";
+
 
 class UserService {
-
     async encryptPassword(password: string){
         const saltRounds = 10;
         const encrypted = await bcrypt.hash(password, saltRounds);
@@ -56,7 +56,11 @@ class UserService {
                 photo: body.photo,
                 password: encrypted,
                 role: body.role,
-
+                country: {
+                    connect: {
+                        id: body.countryId
+                    }
+                }
             }
         });
         return user;
@@ -65,14 +69,20 @@ class UserService {
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD
     async getUsers() {
         const users = await prisma.user.findMany( {
-            orderBy: { createdAt: 'asc'}
+            orderBy: { createdAt: 'asc'},
+            include: {
+                country: true
+            }
         }); 
         return users;
     }
 
     async getUserbyEmail(wantedEmail: string) {
         const user = await prisma.user.findUnique({
-            where: { email: wantedEmail }
+            where: { email: wantedEmail },
+            include: {
+                country: true
+            }
         });
         if(!user){
             throw new QueryError(`Email ${wantedEmail} não encontrado!`);
@@ -83,6 +93,9 @@ class UserService {
     async getUserbyId(id: number) {
         const user = await prisma.user.findUnique({
             where: { id },
+            include: {
+                country: true
+            }
         });
     
         if (!user) {
@@ -92,7 +105,6 @@ class UserService {
         
     }
 
-  
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {
