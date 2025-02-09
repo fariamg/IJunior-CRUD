@@ -47,7 +47,6 @@ router.get("/email/:email", verifyJWT,  checkRole([userRoles.ADMIN]), async (req
 // ROTA PARA CRIAR UM USUÁRIO (POST)
 router.post("/", async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
-        
         const user = await UserService.createUser(req.body); // Passando req.body diretamente
 
         res.status(statusCodes.CREATED).json(user);
@@ -58,7 +57,7 @@ router.post("/", async function createUser(req: Request, res: Response, next: Ne
 });
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.put("/:id", verifyJWT, async function createUser(req: Request, res: Response, next: NextFunction) {
     
     try {
          // Passando tanto o id quanto o body para o método updateUser
@@ -70,7 +69,7 @@ router.put("/:id", async function createUser(req: Request, res: Response, next: 
     }
 });
 
-router.delete("/:id", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         
         await UserService.deleteUser(Number(req.params.id));
