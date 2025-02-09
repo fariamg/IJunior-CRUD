@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import prisma from "../../../prismaClient";
-import { PermissionError } from "../../../../errors/PermissionError";
+import prisma from "../../config/prismaClient";
+import { PermissionError } from "../../errors/PermissionError";
 import {compare} from "bcrypt";
-import statusCodes from "../../../../utils/constants/statusCodes";
+import statusCodes from "../../utils/constants/statusCodes";
 import { User } from "@prisma/client";
 import { sign, verify, JwtPayload } from "jsonwebtoken";
-import { TokenError } from "../../../../errors/TokenError";
+import { TokenError } from "../../errors/TokenError";
 
 
 

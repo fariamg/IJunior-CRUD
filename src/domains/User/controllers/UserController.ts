@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction} from "express";
 import UserService from "../services/UserService";
 import statusCodes from "../../../../utils/constants/statusCodes";
-import { checkRole, login, logout, verifyJWT } from "../../middlewares/auth";
+import { checkRole, login, logout, verifyJWT } from "../../../middlewares/auth";
 import { userRoles } from "../../../../utils/constants/userRoles";
 
 const router = Router();
