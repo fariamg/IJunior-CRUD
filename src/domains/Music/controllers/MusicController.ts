@@ -1,6 +1,8 @@
 import { Router , Request, Response, NextFunction} from "express";
 import MusicService from "../services/MusicService";
 import statusCodes from "../../../../utils/constants/statusCodes";
+import { checkRole, verifyJWT } from "../../../middlewares/auth";
+import { userRoles } from "../../../../utils/constants/userRoles";
 
 
 const router = Router();
@@ -39,7 +41,7 @@ router.get("/name/:name", async(req: Request, res: Response, next: NextFunction)
 
 
 // ROTA PARA CRIAR OBJETO
-router.post("/", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createMusic(req: Request, res: Response, next: NextFunction) {
     try {
         
         const music = await MusicService.createMusic(req.body, req.body.artistIds);
