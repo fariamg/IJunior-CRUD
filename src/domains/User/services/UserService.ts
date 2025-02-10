@@ -55,7 +55,6 @@ class UserService {
                 email: body.email,
                 photo: body.photo,
                 password: encrypted,
-                role: "USER",
                 country: {
                     connect: {
                         id: body.countryId
@@ -127,7 +126,12 @@ class UserService {
                 email: body.email,
                 photo: body.photo,
                 password: body.password,
-                role: body.role
+                role: body.role,
+                country: {
+                    connect: {
+                        id: body.countryId
+                    }
+                }
             },
             where: {
                 id: id

@@ -10,39 +10,6 @@ router.post("/login", login);
 router.post("/logout", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), logout);
 // router.post("/logout", verifyJWT, logout)
 
-// ROTAS PARA LEITURA (GET) //
-router.get("/",verifyJWT, checkRole([userRoles.ADMIN]),  async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const users = await UserService.getUsers();
-        res.status(statusCodes.SUCCESS).json(users);
-
-    } catch (error) {
-        next(error);
-    }
-    
-});
-
-router.get("/id/:id", verifyJWT, checkRole([userRoles.ADMIN]), async(req: Request, res: Response, next: NextFunction) => {
-    try {
-        const user = await UserService.getUserbyId(Number(req.params.id));
-        res.status(statusCodes.SUCCESS).json(user);
-        
-    } catch (error) {
-        next(error);
-        
-    }
-});
-
-router.get("/email/:email", verifyJWT,  checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const email = req.params.email;  // Aqui pegamos o email da URL
-        const user = await UserService.getUserbyEmail(email);
-        res.status(statusCodes.SUCCESS).json(user);
-    } catch (error) {
-        next(error);
-    }
-});
-
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)
 router.post("/", async function createUser(req: Request, res: Response, next: NextFunction) {
@@ -56,6 +23,8 @@ router.post("/", async function createUser(req: Request, res: Response, next: Ne
     }
 });
 
+
+
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
 router.put("/:id", verifyJWT, async function createUser(req: Request, res: Response, next: NextFunction) {
     
@@ -68,6 +37,8 @@ router.put("/:id", verifyJWT, async function createUser(req: Request, res: Respo
         next(error);
     }
 });
+
+
 
 router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
