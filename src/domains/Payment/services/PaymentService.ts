@@ -20,7 +20,7 @@ class PaymentService {
     async getPayments() {
         try {
             return await prisma.payment.findMany({
-                include: { user: true, subscription: true },
+                include: { user:  { omit: { password: true } }, subscription: true },
             });
         } catch (error) {
             throw new Error("Erro ao buscar pagamentos");
@@ -42,7 +42,7 @@ class PaymentService {
         try {
             return await prisma.payment.findUnique({
                 where: { id: paymentId },
-                include: { user: true, subscription: true },
+                include: { user:  { omit: { password: true } }, subscription: true },
             });
         } catch (error) {
             throw new Error("Erro ao buscar pagamento");

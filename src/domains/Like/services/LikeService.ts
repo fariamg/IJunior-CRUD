@@ -20,7 +20,7 @@ class LikeService {
     
     async getLikes() {
         try {
-            return await prisma.like.findMany({ include: { music: true, user: true } });
+            return await prisma.like.findMany({ include: { music: true, user:  { omit: { password: true } }} });
         } catch (error) {
             throw new Error("Erro ao buscar likes");
         }

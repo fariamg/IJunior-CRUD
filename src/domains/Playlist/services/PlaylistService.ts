@@ -30,7 +30,7 @@ class PlaylistService {
 
     async getPlaylists() {
         return await prisma.playlist.findMany({
-            include: { creator: true, musics: true, collaborators: true },
+            include: { creator: { omit: { password: true } }, musics: true, collaborators:  { omit: { password: true } } },
         });
     }
 
@@ -45,7 +45,7 @@ class PlaylistService {
     async getPlaylistsByCreatorId(creatorId: number) {
         return await prisma.playlist.findMany({
             where: { creatorId },
-            include: { creator: true, musics: true, collaborators: true },
+            include: { creator: { omit: { password: true } }, musics: true, collaborators:  { omit: { password: true } } },
         });
     }
 
@@ -63,7 +63,7 @@ class PlaylistService {
     private async findPlaylist(where: { id?: number; name?: string }) {
         const playlist = await prisma.playlist.findFirst({
             where,
-            include: { creator: true, musics: true, collaborators: true },
+            include: { creator:  { omit: { password: true } }, musics: true, collaborators:  { omit: { password: true } } },
         });
         if (!playlist) throw new Error(`Playlist não encontrada: ${JSON.stringify(where)}`);
         return playlist;
