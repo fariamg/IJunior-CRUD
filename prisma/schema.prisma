@@ -1,3 +1,20 @@
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SubscriptionType {
+  FREE
+  PREMIUM
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,15 +25,22 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  fullName  String
-  email     String    @unique
-  photo     String?
-  password  String
-  role      String    @default("USER")
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-  isActive  Boolean   @default(true)
+  id             Int          @id @default(autoincrement())
+  fullName       String
+  email          String       @unique
+  photo          String?
+  password       String
+  role           Role         @default(USER)
+  countryId      Int
+  country        Country      @relation(fields: [countryId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  isActive       Boolean      @default(true)
+  playlists      Playlist[]   @relation("UserPlaylists")
+  collaborations Playlist[]   @relation("PlaylistCollaborators")
+  likes          Like[]
+  subscription   Subscription?
+  payments       Payment[]
 
   @@map("users")
 }
@@ -26,9 +50,11 @@ model Artist {
   name      String
   photo     String?
   bio       String?
-  listeners Int
-  createdAt DateTime? @default(now())
-  musics    Music[]   @relation("ArtistToMusic")
+  listeners Int       @default(0)
+  createdAt DateTime  @default(now())
+  musics    Music[]
+  countryId Int
+  country   Country   @relation(fields: [countryId], references: [id])
 
   @@map("artists")
 }
@@ -38,28 +64,76 @@ model Music {
   name       String
   duration   Int
   recordDate DateTime
-  createdAt  DateTime? @default(now())
-  artists    Artist[]  @relation("ArtistToMusic")
+  createdAt  DateTime  @default(now())
+  artists    Artist[]
+  playlists  Playlist[]
+  likes      Like[]
+  likeCount  Int       @default(0) @map("like_count") 
+  playCount  Int       @default(0) @map("play_count")  
 
   @@map("musics")
+  @@index([likeCount]) 
 }
 
 model Country {
-  id          Int           @id @default(autoincrement())
-  name        String
-  continent   String
-  new_artists new_artists[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  continent String
+  users     User[]
+  artists   Artist[]
 
   @@map("countries")
 }
 
-model new_artists {
-  id        Int       @id @default(autoincrement())
-  name      String
-  photo     String?
-  bio       String?
-  listeners Int
-  createdAt DateTime? @default(now())
-  countryId Int
-  countries Country   @relation(fields: [countryId], references: [id])
+model Playlist {
+  id            Int        @id @default(autoincrement())
+  name          String
+  musics        Music[]
+  creatorId     Int
+  creator       User       @relation(fields: [creatorId], references: [id], name: "UserPlaylists")
+  collaborators User[]     @relation("PlaylistCollaborators")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("playlists")
+}
+
+model Like {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  musicId  Int
+  music    Music    @relation(fields: [musicId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, musicId]) 
+  @@map("likes")
+}
+
+model Subscription {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      SubscriptionType
+  duration  Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  payments  Payment[]  
+
+  @@map("subscriptions")
+}
+
+model Payment {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount         Float
+  status         Status
+  subscriptionId Int?      @unique 
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("payments")
+  @@index([status]) 
 }
