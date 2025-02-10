@@ -12,7 +12,7 @@ router.post("/logout", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), 
 
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)
-router.post("/", async function createUser(req: Request, res: Response, next: NextFunction) {
+router.post("/", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         const user = await UserService.createUser(req.body); // Passando req.body diretamente
 
@@ -26,11 +26,13 @@ router.post("/", async function createUser(req: Request, res: Response, next: Ne
 
 
 // ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/:id", verifyJWT, async function createUser(req: Request, res: Response, next: NextFunction) {
+router.put("/update/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function updateUser(req: Request, res: Response, next: NextFunction) {
     
     try {
+
+        const loggedInUserId = req.user.id;
          // Passando tanto o id quanto o body para o método updateUser
-        const user = await UserService.updateUser(Number(req.body.id), req.body);
+        const user = await UserService.updateUser(Number(req.params.id), req.body, loggedInUserId);
 
         res.status(statusCodes.SUCCESS).json(user);
     } catch (error) {
@@ -39,13 +41,13 @@ router.put("/:id", verifyJWT, async function createUser(req: Request, res: Respo
 });
 
 
-
-router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function createUser(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
-        
-        await UserService.deleteUser(Number(req.params.id));
+        const loggedInUserId = req.user.id;
+
+        await UserService.deleteUser(Number(req.params.id), loggedInUserId);
         res.status(statusCodes.SUCCESS).json({
-            message: `Usuário com ID ${req.params.id} deletado com sucesso!`,
+            message: `Usuário deletado com sucesso!`,
         }); 
 
     } catch (error) {
