@@ -106,9 +106,29 @@ class UserService {
 
 
     // U - CRUD - Update de algum usuário baseado no ID
-    async updateUser(id: number, body: User) {
-        
+
+
+    async updateUser(id: number, body: User, loggedInUserId: number) {
+
+        // Verificar se o id do usuário logado corresponde ao id passado na requisição
+
+        if (id !== loggedInUserId) {
+            throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
+        }
+    
+
+
         await this.getUserbyId(id); //usado para verificar se existe usuário com esse ID
+
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                email: body.email,
+            },
+        });
+    
+        if (existingUser && existingUser.id !== id) {
+            throw new InvalidParamError("Este email já está em uso.");
+        }
 
         if(body.email == null){
             throw new InvalidParamError("Email não pode ser nulo!")
@@ -121,12 +141,13 @@ class UserService {
         }
 
         const updatedUser = await prisma.user.update({
+            omit: {
+                password: true
+            },
             data: {
                 fullName:body.fullName,
                 email: body.email,
                 photo: body.photo,
-                password: body.password,
-                role: body.role,
                 country: {
                     connect: {
                         id: body.countryId
@@ -141,8 +162,13 @@ class UserService {
     }
 
     // D - CRUD - Deletar um usuário baseado no ID
-    async deleteUser(wantedId: number) {
+    async deleteUser(wantedId: number, loggedInUserId: number) {
 		
+
+        if (wantedId !== loggedInUserId) {
+            throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
+        }
+    
         await this.getUserbyId(wantedId);
         await prisma.user.delete(({ where: { id: wantedId } }));
 	
