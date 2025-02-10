@@ -24,7 +24,7 @@ router.post("/create", async function createAdmin(req: Request, res: Response, n
 
 
 
-// ROTAS PARA LEITURA (GET) //
+// ROTAS PARA LEITURA DE USUARIOS(GET) //
 router.get("/", verifyJWT, checkRole([userRoles.ADMIN]),  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const users = await AdminServices.getUsers();
@@ -59,7 +59,7 @@ router.get("/email/:email", verifyJWT,  checkRole([userRoles.ADMIN]), async (req
 
 
 
-// ROTA PARA ATUALIZAR QUALQUER USUÁRIO (PUT) //
+// ROTA PARA ATUALIZAR QUALQUER USUÁRIO (PUT) 
 router.put("/:id", verifyJWT,checkRole([userRoles.ADMIN]), async function updateUser(req: Request, res: Response, next: NextFunction) {
     
     try {
@@ -72,7 +72,16 @@ router.put("/:id", verifyJWT,checkRole([userRoles.ADMIN]), async function update
     }
 });
 
-
+router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function deleteUser(req: Request, res: Response, next: NextFunction) {
+    try {
+        await AdminServices.deleteUser(Number(req.params.id));
+        res.status(statusCodes.SUCCESS).json({
+            message: `Usuário com ID ${req.params.id} deletado com sucesso!`,
+        });
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 
