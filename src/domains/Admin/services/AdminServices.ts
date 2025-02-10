@@ -135,6 +135,10 @@ class UserService {
 
     
         const updatedUser = await prisma.user.update({
+
+            omit: {
+                password: true
+            },
             data: {
                 fullName:body.fullName,
                 email: body.email,
