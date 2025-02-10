@@ -55,7 +55,7 @@ class UserService {
                 email: body.email,
                 photo: body.photo,
                 password: encrypted,
-                role: body.role,
+                role: "USER"
                 country: {
                     connect: {
                         id: body.countryId
