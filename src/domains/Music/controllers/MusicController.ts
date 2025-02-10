@@ -8,7 +8,7 @@ import { userRoles } from "../../../../utils/constants/userRoles";
 const router = Router();
 
 // ROTAS PARA LEITURA
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const musics = await MusicService.getMusics();
         res.status(statusCodes.SUCCESS).json(musics);
@@ -18,7 +18,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     }
 });
 
-router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => {
+router.get("/:id", verifyJWT ,async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyId(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(music);
@@ -28,7 +28,7 @@ router.get("/id/:id", async(req: Request, res: Response, next: NextFunction) => 
         
     }
 })
-router.get("/name/:name", async(req: Request, res: Response, next: NextFunction) => {
+router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyName(req.params.name);
         res.status(statusCodes.SUCCESS).json(music);
