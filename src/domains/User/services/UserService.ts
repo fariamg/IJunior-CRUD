@@ -133,9 +133,7 @@ class UserService {
         if(body.email == null){
             throw new InvalidParamError("Email não pode ser nulo!")
         }
-        if(body.password == null){
-            throw new InvalidParamError("Senha não pode ser nula!")
-        }
+    
         if(body.fullName == null){
             throw new InvalidParamError("Nome completo não pode ser nulo!")
         }
@@ -160,6 +158,8 @@ class UserService {
         }); 
         return updatedUser;
     }
+
+
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
