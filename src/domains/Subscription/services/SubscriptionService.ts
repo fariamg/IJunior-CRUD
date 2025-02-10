@@ -1,4 +1,4 @@
-import { SubscriptionType, Status } from "@prisma/client";
+import { SubscriptionType } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 
 class SubscriptionService {
@@ -19,7 +19,13 @@ class SubscriptionService {
     async getAllSubscriptions() {
         try {
             return await prisma.subscription.findMany({
-                include: { payments: true },
+                include: {
+                    payments: {
+                        include: {
+                            user: { omit: { password: true } }
+                        }
+                    }
+                },
             });
         } catch (error) {
             throw new Error("Erro ao buscar assinaturas");
@@ -30,7 +36,13 @@ class SubscriptionService {
         try {
             return await prisma.subscription.findUnique({
                 where: { userId },
-                include: { payments: true },
+                include: {
+                    payments: {
+                        include: {
+                            user: { omit: { password: true } }
+                        }
+                    }
+                },
             });
         } catch (error) {
             throw new Error("Erro ao buscar assinatura");
