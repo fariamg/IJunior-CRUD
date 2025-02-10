@@ -12,7 +12,7 @@ router.post("/logout", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), 
 
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)
-router.post("/", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function createUser(req: Request, res: Response, next: NextFunction) {
+router.post("/",  async function createUser(req: Request, res: Response, next: NextFunction) {
     try {
         const user = await UserService.createUser(req.body); // Passando req.body diretamente
 
@@ -25,8 +25,8 @@ router.post("/", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async 
 
 
 
-// ROTA PARA ATUALIZAR UM USUÁRIO (PUT) //
-router.put("/update/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function updateUser(req: Request, res: Response, next: NextFunction) {
+// ROTA PARA ATUALIZAR SEU USUÁRIO (PUT) //
+router.put("/update/:id", verifyJWT,  async function updateUser(req: Request, res: Response, next: NextFunction) {
     
     try {
 
@@ -41,7 +41,10 @@ router.put("/update/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]
 });
 
 
-router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), async function deleteUser(req: Request, res: Response, next: NextFunction) {
+
+
+//ROTA PARA DELETAR SEU USUÁRIO
+router.delete("/:id", verifyJWT, async function deleteUser(req: Request, res: Response, next: NextFunction) {
     try {
         const loggedInUserId = req.user.id;
 
@@ -50,6 +53,22 @@ router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), a
             message: `Usuário deletado com sucesso!`,
         }); 
 
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+
+//ROTA PARA VER SEU USUÁRIO
+router.get("/", verifyJWT, async function getMyAccount(req: Request, res: Response, next: NextFunction) {
+    try {
+        const loggedInUserId = req.user.id; 
+
+       
+        const user = await UserService.getUserbyId(loggedInUserId);
+
+        res.status(statusCodes.SUCCESS).json(user); 
     } catch (error) {
         next(error);
     }
