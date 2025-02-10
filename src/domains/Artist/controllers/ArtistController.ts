@@ -1,12 +1,15 @@
 import { Router, Request, Response, NextFunction } from "express";
 import ArtistService from "../services/ArtistService";
+import { checkRole, verifyJWT } from "../../../middlewares/auth";
+import { userRoles } from "../../../../utils/constants/userRoles";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
 
 
 // ROTAS PARA LEITURA (GET) 
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artists = await ArtistService.getArtists();
         res.json(artists);
@@ -16,7 +19,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // ROTA PARA OBTER UM ARTISTA POR ID
-router.get("/id/:id", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
         if (isNaN(id)) {
@@ -35,7 +38,7 @@ router.get("/id/:id", async (req: Request, res: Response, next: NextFunction) =>
 });
 
 // ROTA PARA OBTER UM ARTISTA POR NOME
-router.get("/name/:name", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/name/:name", verifyJWT,  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await ArtistService.getArtistbyName(req.params.name);
         if (!artist) {
@@ -49,6 +52,7 @@ router.get("/name/:name", async (req: Request, res: Response, next: NextFunction
 });
 
 // ROTA PARA OBTER ARTISTAS POR PAÍS
+
 router.get("/country/:country", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const country = req.params.country;
@@ -63,8 +67,9 @@ router.get("/country/:country", async (req: Request, res: Response, next: NextFu
     }
 });
 
-// ROTA PARA CRIAR UM ARTISTA (POST)
-router.post("/", async function createArtist(req: Request, res: Response, next: NextFunction) {
+// ROTA PARA CRIAR UM ARTISTA 
+
+router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createArtist(req: Request, res: Response, next: NextFunction) {
     try {
         const { name, photo, bio, listeners } = req.body;
 
@@ -80,8 +85,8 @@ router.post("/", async function createArtist(req: Request, res: Response, next: 
     }
 });
 
-// ROTA PARA ATUALIZAR UM ARTISTA (PUT) //
-router.put("/:id", async function updateArtist(req: Request, res: Response, next: NextFunction) {
+// ROTA PARA ATUALIZAR UM ARTISTA  
+router.put("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function updateArtist(req: Request, res: Response, next: NextFunction) {
     try {
         const { id } = req.params;
 
@@ -93,7 +98,9 @@ router.put("/:id", async function updateArtist(req: Request, res: Response, next
     }
 });
 
-router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
+// ROTA PARA DELETAR UM ARTISTA
+
+router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         
@@ -103,7 +110,9 @@ router.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>
         }
 
         await ArtistService.deleteArtist(Number(id));
-        res.status(204).send();
+        res.status(statusCodes.SUCCESS).json({
+                    message: `Artista com ID ${req.params.id} deletado com sucesso!`,
+                });
     } catch (error) {
         next(error);
     }

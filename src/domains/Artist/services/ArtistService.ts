@@ -30,6 +30,7 @@ class ArtistService {
 
     async getArtists() {
         const artists = await prisma.artist.findMany({
+            orderBy: { name: 'asc'},
             include: {
             country: true
         }});
