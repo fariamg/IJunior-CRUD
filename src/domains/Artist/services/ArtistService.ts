@@ -102,7 +102,7 @@ class ArtistService {
         });
     
         if (!artists.length) {
-            throw new NotFoundError(`não encontrado`);
+            throw new NotFoundError(`Artistas não encontrados para o país: ${country}`);
         }
         return artists;
     }
