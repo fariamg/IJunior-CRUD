@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import LikeService from "../services/LikeService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
@@ -7,7 +8,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikes();
-        res.json(likes);
+        res.status(statusCodes.SUCCESS).json(likes);
     } catch (error) {
         next(error);
     }
@@ -17,7 +18,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/user/:userId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikesByUserId(Number(req.params.userId));
-        res.json(likes);
+        res.status(statusCodes.SUCCESS).json(likes);
     } catch (error) {
         next(error);
     }
@@ -27,7 +28,7 @@ router.get("/user/:userId", async (req: Request, res: Response, next: NextFuncti
 router.get("/music/:musicId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikesByMusicId(Number(req.params.musicId));
-        res.json(likes);
+        res.status(statusCodes.SUCCESS).json(likes);
     } catch (error) {
         next(error);
     }
@@ -37,7 +38,7 @@ router.get("/music/:musicId", async (req: Request, res: Response, next: NextFunc
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const like = await LikeService.createLike(req.body.userId, req.body.musicId);
-        res.status(201).json(like);
+        res.status(statusCodes.CREATED).json(like);;
     } catch (error) {
         next(error);
     }
@@ -47,7 +48,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.delete("/:userId/:musicId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         await LikeService.deleteLike(Number(req.params.userId), Number(req.params.musicId));
-        res.status(204).send();
+        res.status(statusCodes.NO_CONTENT).send();
     } catch (error) {
         next(error);
     }
