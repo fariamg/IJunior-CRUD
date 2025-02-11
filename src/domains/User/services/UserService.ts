@@ -85,9 +85,11 @@ class UserService {
                 listenedMusics: true
             }
         });
+
         if(!user){
             throw new QueryError(`Email ${wantedEmail} não encontrado!`);
         }
+
         return user;
     }
     
@@ -162,7 +164,6 @@ class UserService {
     }
 
     async updatePassword(userId: number, currentPassword: string, newPassword: string) {
-        
         const user = await this.getUserbyId(userId);
     
         // Verificar se a senha atual está correta
@@ -195,7 +196,6 @@ class UserService {
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
-
         if (wantedId !== loggedInUserId) {
             throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
         }
