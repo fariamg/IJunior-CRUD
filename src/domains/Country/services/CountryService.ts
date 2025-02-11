@@ -29,7 +29,7 @@ class CountryService {
             orderBy: { name: 'asc' },
         });
 
-        if (!countries) {
+        if (!countries.length) {
             throw new NotFoundError(`Nenhum país encontrado`);
         }
 
@@ -71,7 +71,7 @@ class CountryService {
     async updateCountry(id: number, body: Country) {
         await this.getCountrybyId(id);
 
-        const updatedCountry = await prisma.country.update({
+        return await prisma.country.update({
             data: {
                 name: body.name,
                 continent: body.continent,
@@ -80,7 +80,6 @@ class CountryService {
                 id: id
             }
         });
-        return updatedCountry;
     }
 
     async deleteCountry(countryId: number) {

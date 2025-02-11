@@ -157,7 +157,7 @@ class MusicService {
     async addPlayCount(id: number) {
         await this.getMusicbyId(id);
 
-        const updatedMusic = await prisma.music.update({
+        return await prisma.music.update({
             where: {
                 id: id 
             },            
@@ -167,8 +167,6 @@ class MusicService {
                 }
             }
         });
-
-        return updatedMusic; // Retorna a música atualizada
     }
 }
 

@@ -135,12 +135,11 @@ class ArtistService {
     async deleteArtist(id: number) {
         await this.getArtistbyId(id);
 
-        const deletedArtist = await prisma.artist.delete({
+        return await prisma.artist.delete({
             where: {
                 id: id
             }
         });
-        return deletedArtist;
     }
 
 }
