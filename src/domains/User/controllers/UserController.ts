@@ -71,7 +71,6 @@ router.delete("/:id", verifyJWT, async function deleteUser(req: Request, res: Re
         res.status(statusCodes.SUCCESS).json({
             message: `Usuário deletado com sucesso!`,
         }); 
-
     } catch (error) {
         next(error);
     }

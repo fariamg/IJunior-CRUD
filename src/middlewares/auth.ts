@@ -38,7 +38,6 @@ function cookieExtractor(req: Request){
 }
 
 export function verifyJWT(req: Request, res: Response, next: NextFunction){
-
     try {
         const token = cookieExtractor(req)
 
