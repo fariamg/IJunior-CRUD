@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import PaymentService from "../services/PaymentService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
@@ -7,7 +8,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payments = await PaymentService.getPayments();
-        res.json(payments);
+        res.status(statusCodes.SUCCESS).json(payments);
     } catch (error) {
         next(error);
     }
@@ -17,7 +18,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/id/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payment = await PaymentService.getPaymentById(Number(req.params.id));
-        res.json(payment);
+        res.status(statusCodes.SUCCESS).json(payment);
     } catch (error) {
         next(error);
     }
@@ -27,7 +28,7 @@ router.get("/id/:id", async (req: Request, res: Response, next: NextFunction) =>
 router.get("/user/:userId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payments = await PaymentService.getPaymentsByUserId(Number(req.params.userId));
-        res.json(payments);
+        res.status(statusCodes.SUCCESS).json(payments);
     } catch (error) {
         next(error);
     }
@@ -37,7 +38,7 @@ router.get("/user/:userId", async (req: Request, res: Response, next: NextFuncti
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payment = await PaymentService.createPayment(req.body.userId, req.body.amount, req.body.status, req.body.subscriptionId);
-        res.status(201).json(payment);
+        res.status(statusCodes.CREATED).json(payment);
     } catch (error) {
         next(error);
     }
@@ -47,7 +48,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const payment = await PaymentService.updatePaymentStatus(Number(req.params.id), req.body.status);
-        res.json(payment);
+        res.status(statusCodes.SUCCESS).json(payment);
     } catch (error) {
         next(error);
     }
