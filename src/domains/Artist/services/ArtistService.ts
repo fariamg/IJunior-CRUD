@@ -1,7 +1,10 @@
-import { Artist } from '@prisma/client';
+import { Artist, Country } from '@prisma/client';
 import prisma from '../../../../config/prismaClient';
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import { NOTFOUND } from 'dns';
+import { NotFoundError } from '../../../../errors/NotFoundError';
+import CountryService from '../../Country/services/CountryService';
 
 class ArtistService {
 
@@ -41,6 +44,10 @@ class ArtistService {
     }
 
     async getArtistbyId(id: number) {
+        if (id == null || isNaN(id)) {
+            throw new InvalidParamError("Insira um id válido!");
+        }
+
         const artist = await prisma.artist.findUnique({
             where: { id },
             include: {
@@ -49,13 +56,17 @@ class ArtistService {
         });
 
         if (!artist) {
-            throw new QueryError(`Id ${id} não encontrado`);
+            throw new NotFoundError(`Artista com id: ${id}; não encontrado`);
         }
 
         return artist;
     }
 
     async getArtistbyName(name: string) {
+        if (name == null) {
+            throw new InvalidParamError("Nome do artista não informado!");
+        }
+
         const artist = await prisma.artist.findFirst({
             where: { name: {
                 equals: name },
@@ -66,13 +77,19 @@ class ArtistService {
         });
 
         if (!artist) {
-            throw new QueryError(`Nome ${name} não encontrado`);
+            throw new NotFoundError(`Artista com nome: ${name}; não encontrado`);
         }
 
         return artist;
     }
 
     async getArtistsbyCountry(country: string) {
+        if (country == null) {
+            throw new InvalidParamError("País não informado!");
+        }
+
+        await CountryService.getCountrybyName(country);
+
         const artists = await prisma.artist.findMany({
             where: {
                 country: {
@@ -85,13 +102,16 @@ class ArtistService {
         });
     
         if (!artists.length) {
-            throw new Error(`País ${country} não encontrado`);
+            throw new NotFoundError(`não encontrado`);
         }
         return artists;
     }
 
     async updateArtist(id: number, body: Artist) {
-        
+        if (id == null || isNaN(id)) {
+            throw new InvalidParamError("Insira um id válido!");
+        }
+
         await this.getArtistbyId(id);
 
         if(body.name == null){
@@ -120,15 +140,9 @@ class ArtistService {
                 id: id
             }
         });
-
-
         return deletedArtist;
     }
 
-    async deleteAll() {
-        const deletedArtists = await prisma.artist.deleteMany();
-        return deletedArtists;
-    }
 }
 
 export default new ArtistService();

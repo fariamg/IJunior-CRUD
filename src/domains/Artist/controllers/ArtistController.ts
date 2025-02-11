@@ -22,16 +22,10 @@ router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunctio
 router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const id = Number(req.params.id);
-        if (isNaN(id)) {
-            return res.status(400).json({ message: "ID inválido!" });
-        }
 
         const artist = await ArtistService.getArtistbyId(id);
-        if (!artist) {
-            return res.status(404).json({ message: "Artista não encontrado." });
-        }
 
-        res.json(artist);
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
@@ -41,11 +35,8 @@ router.get("/:id", verifyJWT, async (req: Request, res: Response, next: NextFunc
 router.get("/name/:name", verifyJWT,  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const artist = await ArtistService.getArtistbyName(req.params.name);
-        if (!artist) {
-            return res.status(404).json({ message: "Artista não encontrado." });
-        }
 
-        res.json(artist);
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
@@ -56,12 +47,10 @@ router.get("/name/:name", verifyJWT,  async (req: Request, res: Response, next: 
 router.get("/country/:country", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const country = req.params.country;
-        if (!country) {
-            return res.status(400).json({ message: "País é obrigatório!" });
-        }
+
         const artists = await ArtistService.getArtistsbyCountry(country);
 
-        res.json(artists);
+        res.status(statusCodes.SUCCESS).json(artists);
     } catch (error) {
         next(error);
     }
@@ -73,13 +62,9 @@ router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createA
     try {
         const { name, photo, bio, listeners } = req.body;
 
-        if (!name) {
-            return res.status(400).json({ message: "Nome é obrigatório!" });
-        }
-
         const artist = await ArtistService.createArtist(req.body);
 
-        res.status(201).json(artist);
+        res.status(statusCodes.CREATED).json(artist);;
     } catch (error) {
         next(error);
     }
@@ -92,7 +77,7 @@ router.put("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async function updat
 
         const artist = await ArtistService.updateArtist(Number(id), req.body);
 
-        res.status(200).json(artist);
+        res.status(statusCodes.SUCCESS).json(artist);
     } catch (error) {
         next(error);
     }
@@ -105,14 +90,10 @@ router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Reque
         const { id } = req.params;
         
         const artist = await ArtistService.getArtistbyId(Number(id));
-        if (!artist) {
-            return res.status(404).json({ message: "Artista não encontrado." });
-        }
 
         await ArtistService.deleteArtist(Number(id));
-        res.status(statusCodes.SUCCESS).json({
-                    message: `Artista com ID ${req.params.id} deletado com sucesso!`,
-                });
+
+        res.status(statusCodes.NO_CONTENT).send();
     } catch (error) {
         next(error);
     }
