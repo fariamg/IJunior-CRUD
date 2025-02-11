@@ -37,8 +37,8 @@ class CountryService {
     }
 
     async getCountrybyId(id: number) {
-        if (!id) {
-            throw new InvalidParamError(`Id não informado`);
+        if (!id || isNaN(id)) {
+            throw new InvalidParamError(`Insira um id válido`);
         }
         
         const country = await prisma.country.findUnique({
@@ -69,10 +69,6 @@ class CountryService {
     }
 
     async updateCountry(id: number, body: Country) {
-        if (!id) {
-            throw new InvalidParamError(`Id não informado`);
-        }
-
         await this.getCountrybyId(id);
 
         const updatedCountry = await prisma.country.update({
