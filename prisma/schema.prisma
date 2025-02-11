@@ -41,6 +41,7 @@ model User {
   likes          Like[]
   subscription   Subscription?
   payments       Payment[]
+  listenedMusics Music[]      @relation("UserListenedMusics") 
 
   @@map("users")
 }
@@ -69,7 +70,8 @@ model Music {
   playlists  Playlist[]
   likes      Like[]
   likeCount  Int       @default(0) @map("like_count") 
-  playCount  Int       @default(0) @map("play_count")  
+  playCount  Int       @default(0) @map("play_count")
+  listenedBy User[]    @relation("UserListenedMusics")  
 
   @@map("musics")
   @@index([likeCount]) 

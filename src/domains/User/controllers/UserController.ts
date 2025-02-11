@@ -40,6 +40,25 @@ router.put("/update/:id", verifyJWT,  async function updateUser(req: Request, re
     }
 });
 
+// ROTA PARA ATUALIZAR A SENHA DO USUÁRIO (PUT)
+router.put("/account/password/", verifyJWT, async function updatePassword(req: Request, res: Response, next: NextFunction) {
+    try {
+        
+        const loggedInUserId = req.user.id; // ID do usuário logado
+        
+        // Atualizar a senha usando o UserService
+        const updatedUser = await UserService.updatePassword(loggedInUserId, req.body.currentPassword, req.body.newPassword);
+
+        // Resposta de sucesso
+        res.status(statusCodes.SUCCESS).json({
+            message: "Senha atualizada com sucesso!",
+            user: updatedUser
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
 
 
 
@@ -73,6 +92,58 @@ router.get("/", verifyJWT, async function getMyAccount(req: Request, res: Respon
         next(error);
     }
 });
+
+//ROTA DE OUVIR MUSICA
+router.post("/account/listen/:id", verifyJWT, async function listenToMusic(req: Request, res: Response, next: NextFunction) {
+    try {
+        const loggedInUserId = req.user.id; // ID do usuário logado
+        const musicId = Number(req.params.id); // ID da música que está sendo ouvida
+
+        await UserService.registerMusicListen(loggedInUserId, musicId);
+        
+        res.status(statusCodes.SUCCESS).json({
+            message: `Música com ID "${musicId}" ouvida pelo usuário com ID ${loggedInUserId}.`,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+//ROTA DE REMOVER MUSICA OUVIDA
+router.delete("/account/unlisten/:id", verifyJWT, async function unlistenToMusic(req: Request, res: Response, next: NextFunction) {
+    try {
+        const loggedInUserId = req.user.id; // ID do usuário logado
+        const musicId = Number(req.params.id); // ID da música que quer ser removida
+
+        await UserService.removeMusicListen(loggedInUserId, musicId);
+        
+        res.status(statusCodes.SUCCESS).json({
+            message: `Música com ID "${musicId}" removida pelo usuário com ID ${loggedInUserId}.`,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+//ROTA DE LISTAR MUSICAS OUVIDAS
+router.get("/account/musics", verifyJWT, async function getUserMusics(req: Request, res: Response, next: NextFunction) {
+    try {
+        const loggedInUserId = req.user.id; 
+        const musics = await UserService.getUserMusics(loggedInUserId);
+        if(!musics){
+            res.status(statusCodes.NOT_FOUND).json({
+                message:`Usuário não ouviu músicas ainda!`
+            })
+        }
+        res.status(statusCodes.SUCCESS).json(musics); 
+    } 
+    catch (error) {
+        next(error);
+    }
+});
+
 
 
 export default router;
