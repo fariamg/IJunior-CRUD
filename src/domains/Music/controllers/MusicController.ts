@@ -11,27 +11,24 @@ const router = Router();
 router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const musics = await MusicService.getMusics();
-        
         res.status(statusCodes.SUCCESS).json(musics);
     } catch (error) {
         next(error);
     }
 });
 
-router.get("/:id", verifyJWT ,async(req: Request, res: Response, next: NextFunction) => {
+router.get("/:id", verifyJWT ,async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyId(Number(req.params.id));
-
         res.status(statusCodes.SUCCESS).json(music);
     } catch (error) {
         next(error);
         
     }
 })
-router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
+router.get("/name/:name", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyName(req.params.name);
-
         res.status(statusCodes.SUCCESS).json(music);
     } catch (error) {
         next(error);
@@ -39,10 +36,9 @@ router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: Ne
     }
 })
 
-router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
+router.get("/artist/:id", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const musics = await MusicService.getMusicsbyArtist(req.body.id);
-
         res.status(statusCodes.SUCCESS).json(musics);
     } catch (error) {
         next(error);
@@ -52,10 +48,9 @@ router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: Ne
 
 
 // ROTA PARA CRIAR OBJETO
-router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.createMusic(req.body, req.body.artistIds);
-
         res.status(statusCodes.CREATED).json(music);
     } catch (error) {
         next(error);
@@ -63,8 +58,7 @@ router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createM
 });
 
 //ROTA PARA ATUALIZAR OBJETO MUSICA
-router.put("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
-    
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.updateMusic(req.body.id, req.body);
 
@@ -75,10 +69,10 @@ router.put("/:id", async function createMusic(req: Request, res: Response, next:
 });
 
 //ROTA PARA DELETAR OBJETO MUSICA
-router.delete("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
+router.delete("/:id", async(req: Request, res: Response, next: NextFunction) => {
     try {
-        await MusicService.deleteMusic(req.body.Id);
-
+        const { id } = req.params;
+        await MusicService.deleteMusic(Number(id));
         res.status(statusCodes.NO_CONTENT).send();
     } catch (error) {
         next(error);

@@ -139,6 +139,7 @@ class MusicService {
         });
         return updatedMusic;
     }
+
     // D - CRUD - Deletar uma música baseado no ID
     async deleteMusic(id: number) {
         await this.getMusicbyId(id);
@@ -157,7 +158,9 @@ class MusicService {
         await this.getMusicbyId(id);
 
         const updatedMusic = await prisma.music.update({
-            where: { id: id },            
+            where: {
+                id: id 
+            },            
             data: {
                 playCount: {
                     increment: 1 // Incrementa o playCount
