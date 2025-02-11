@@ -2,16 +2,17 @@ import { Country } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
+import { NotFoundError } from "../../../../errors/NotFoundError";
 
 class CountryService {
 
     async createCountry(body: Country) {
         if (body.name == null) {
-            throw new Error("Nome do país não informado!");
+            throw new InvalidParamError("Nome do país não informado!");
         }
 
         if (body.continent == null) {
-            throw new Error("Continente do país não informado!");
+            throw new InvalidParamError("Continente do país não informado!");
         }
 
         const country = await prisma.country.create({
@@ -29,7 +30,7 @@ class CountryService {
         });
 
         if (!countries) {
-            throw new QueryError(`Nenhum país encontrado`);
+            throw new NotFoundError(`Nenhum país encontrado`);
         }
 
         return countries;
@@ -45,7 +46,7 @@ class CountryService {
         });
 
         if (!country) {
-            throw new QueryError(`País com id ${id} não encontrado`);
+            throw new NotFoundError(`País com id ${id} não encontrado`);
         }
 
         return country;
@@ -56,12 +57,12 @@ class CountryService {
             throw new InvalidParamError(`Nome do país não informado`);
         }
 
-        const country = await prisma.country.findFirst({
+        const country = await prisma.country.findUnique({
             where: { name: name },
         });
 
         if (!country) {
-            throw new QueryError(`Nome  ${name} não encontrado`);
+            throw new NotFoundError(`Nome  ${name} não encontrado`);
         }
 
         return country;
@@ -72,7 +73,7 @@ class CountryService {
             throw new InvalidParamError(`Id não informado`);
         }
 
-        const country = await this.getCountrybyId(id);
+        await this.getCountrybyId(id);
 
         const updatedCountry = await prisma.country.update({
             data: {
@@ -86,11 +87,11 @@ class CountryService {
         return updatedCountry;
     }
 
-    async deleteCountry(wantedId: number) {
-        const country = await this.getCountrybyId(wantedId);
+    async deleteCountry(countryId: number) {
+        const country = await this.getCountrybyId(countryId);
         if (country) {
             await prisma.country.delete({
-                where: { id: wantedId }
+                where: { id: countryId }
             });
         }
     }

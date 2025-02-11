@@ -58,7 +58,7 @@ router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
 router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const deletedCountry = await CountryService.deleteCountry(Number(req.params.id));
-        res.status(statusCodes.NO_CONTENT);
+        res.status(statusCodes.NO_CONTENT).send();
     } catch (error) {
         next(error);
     }
