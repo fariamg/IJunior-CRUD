@@ -5,7 +5,6 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { NotFoundError } from "../../../../errors/NotFoundError";
 
 class CountryService {
-
     async createCountry(body: Country) {
         if (body.name == null) {
             throw new InvalidParamError("Nome do país não informado!");

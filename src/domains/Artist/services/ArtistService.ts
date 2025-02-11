@@ -7,7 +7,6 @@ import { NotFoundError } from '../../../../errors/NotFoundError';
 import CountryService from '../../Country/services/CountryService';
 
 class ArtistService {
-
     async createArtist(body: Artist) {
          //Verificar se alguns elementos não são nulos
         if(body.name == null){

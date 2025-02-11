@@ -10,7 +10,6 @@ class UserService {
         const saltRounds = 10;
         const encrypted = await bcrypt.hash(password, saltRounds);
         return encrypted;
-
     }
 
     // C - CRUD - Criação de um novo usuário
