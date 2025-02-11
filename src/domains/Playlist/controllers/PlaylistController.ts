@@ -26,14 +26,14 @@ router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
 // ROTA PARA OBTER UMA PLAYLIST POR NOME
 router.get("/name/:name", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const playlist = await PlaylistService.getPlaylistByName(req.params.name);
+        const playlist = await PlaylistService.getPlaylistsByName(req.params.name);
         res.json(playlist);
     } catch (error) {
         next(error);
     }
 });
 
-// ROTA PARA OBTER PLAYLISTS DE CADA CRIADOR POR ID
+// ROTA PARA OBTER PLAYLISTS DE CADA CRIADOR
 router.get("/creator/:creatorId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const playlists = await PlaylistService.getPlaylistsByCreatorId(Number(req.params.creatorId));
