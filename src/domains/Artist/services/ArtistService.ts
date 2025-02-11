@@ -6,7 +6,6 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 class ArtistService {
 
     async createArtist(body: Artist) {
-
          //Verificar se alguns elementos não são nulos
         if(body.name == null){
             throw new InvalidParamError("Nome do artista não informado!")

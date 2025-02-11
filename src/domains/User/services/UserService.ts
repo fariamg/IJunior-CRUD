@@ -11,7 +11,6 @@ class UserService {
         const saltRounds = 10;
         const encrypted = await bcrypt.hash(password, saltRounds);
         return encrypted;
-
     }
 
     // C - CRUD - Criação de um novo usuário
@@ -114,17 +113,12 @@ class UserService {
     }
 
     // U - CRUD - Update de algum usuário baseado no ID
-
-
     async updateUser(id: number, body: User, loggedInUserId: number) {
 
         // Verificar se o id do usuário logado corresponde ao id passado na requisição
-
         if (id !== loggedInUserId) {
             throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
         }
-    
-
 
         await this.getUserbyId(id); //usado para verificar se existe usuário com esse ID
 
@@ -201,7 +195,6 @@ class UserService {
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
-		
 
         if (wantedId !== loggedInUserId) {
             throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
@@ -209,7 +202,6 @@ class UserService {
     
         await this.getUserbyId(wantedId);
         await prisma.user.delete(({ where: { id: wantedId } }));
-	
     }
     
     async deleteAll() {

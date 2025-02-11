@@ -61,11 +61,9 @@ export function verifyJWT(req: Request, res: Response, next: NextFunction){
 
 export async function login(req: Request, res: Response, next: NextFunction){
     try {
-
         const token = cookieExtractor(req);
 
         if (token) {
-      
             return res.status(statusCodes.FORBIDDEN).json("Você já está logado!");
         }
         const user = await prisma.user.findUnique({
@@ -82,7 +80,6 @@ export async function login(req: Request, res: Response, next: NextFunction){
         const match = await compare(req.body.password, user.password);
         
         if(!match){
-           
             throw new PermissionError("Email e/ou senha incorretos!");
         }
 
@@ -112,7 +109,6 @@ export async function logout(req: Request, res: Response, next: NextFunction){
 
 export async function notLoggedIn(req: Request, res: Response, next: NextFunction){
     try {
-        
         const token = cookieExtractor(req);
         
         if(!token){
@@ -125,7 +121,6 @@ export async function notLoggedIn(req: Request, res: Response, next: NextFunctio
 }
 
 export function checkRole(requiredRoles: string[]) {
-    
     return async (req: Request, res: Response, next: NextFunction) => {
         const token = cookieExtractor(req);
         try {
