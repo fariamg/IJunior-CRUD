@@ -41,10 +41,10 @@ router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: Ne
 
 router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const musics = await MusicService.getMusicsArtist(req.body.id);
+        const musics = await MusicService.getMusicsArtist(Number(req.params.id));
         if(!musics){
             res.status(statusCodes.NOT_FOUND).json({
-                message: `O artista de ID ${req.body.id} não tem músicas ainda!`
+                message: `O artista de ID ${Number(req.params.id)} não tem músicas ainda!`
             });    
         }
         res.status(statusCodes.SUCCESS).json(musics);
