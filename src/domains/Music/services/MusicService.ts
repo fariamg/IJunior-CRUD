@@ -3,6 +3,7 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { Artist, Music } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import ArtistService from "../../Artist/services/ArtistService";
+import { NotFoundError } from "../../../../errors/NotFoundError";
 
 class MusicService {
     
@@ -14,12 +15,15 @@ class MusicService {
         if(body.name == null){
             throw new InvalidParamError("Nome da música não informado!")
         }
+
         if(body.duration == null){
             throw new InvalidParamError("Duração da música não informada!")
         }
+
         if(body.recordDate == null){
             throw new InvalidParamError("Data de gravação da música não informada!")
         }
+
         if(artistIds == null){
             throw new InvalidParamError("ID do(s) artista(s) não informado(s)!")
         }
@@ -35,7 +39,7 @@ class MusicService {
             },
             include: { artists: true }, 
         });
-    
+
         return music;
     }
 
@@ -46,35 +50,50 @@ class MusicService {
             orderBy: { name: 'asc' }, 
             include: { artists: true },
         });
+
+        if (!musics.length) {
+            throw new NotFoundError("Nenhuma música encontrada");
+        }
+
         return musics;
     }
 
     async getMusicbyId(id: number) {
+        if (id == null || isNaN(id)) {
+            throw new InvalidParamError("Id da música não informado ou inválido");
+        }
+
         const music = await prisma.music.findUnique({
             where: { id },
         });
 
         if (!music) {
-            throw new QueryError(`Id  ${id} não encontrado`);
+            throw new QueryError(`Mísica com Id ${id} não encontrado`);
         }
 
         return music;
     }
 
     async getMusicbyName(name: string) {
+        if (name == null) {
+            throw new InvalidParamError("Nome da música não informado");
+        }
+
         const music = await prisma.music.findFirst({
             where: { name: name },
         });
 
         if (!music) {
-            throw new QueryError(`Nome  ${name} não encontrado`);
+            throw new NotFoundError(`Música com nome ${name} não encontrada`);
         }
 
         return music;
     }
+
     //Retorna todas músicas de um determinado artista 
-    async getMusicsArtist(id: number) {
+    async getMusicsbyArtist(id: number) {
         await ArtistService.getArtistbyId(id);
+
         const musics = await prisma.music.findMany({
             where: {
                 artists: {
@@ -85,13 +104,17 @@ class MusicService {
                 artists: true 
             }
         });
+
+        if (!musics.length) {
+            throw new NotFoundError(`Nenhuma música encontrada para o artista com id ${id}`);
+        }
+
         return musics;
     }
 
 
     // U - CRUD - Update de alguma música baseada no id
     async updateMusic(id: number, body: Music) {
-        
         await this.getMusicbyId(id);
 
         if(body.name == null){
@@ -118,7 +141,6 @@ class MusicService {
     }
     // D - CRUD - Deletar uma música baseado no ID
     async deleteMusic(id: number) {
-        
         await this.getMusicbyId(id);
 
         const deletedMusic = await prisma.music.delete({
@@ -126,25 +148,23 @@ class MusicService {
                 id: id
             }
         });
+
         return deletedMusic;
     }
 
-    async deleteAll() {
-        const deletedMusics = await prisma.music.deleteMany();
-        return deletedMusics
-    }
-
-
     //Incrementa o número de reproduções  
     async addPlayCount(id: number) {
-        await this.getMusicbyId(id); 
+        await this.getMusicbyId(id);
+
         const updatedMusic = await prisma.music.update({
-            where: { id: id },             data: {
+            where: { id: id },            
+            data: {
                 playCount: {
                     increment: 1 // Incrementa o playCount
                 }
             }
         });
+
         return updatedMusic; // Retorna a música atualizada
     }
 }

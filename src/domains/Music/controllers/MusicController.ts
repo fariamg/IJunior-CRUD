@@ -11,8 +11,8 @@ const router = Router();
 router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const musics = await MusicService.getMusics();
+        
         res.status(statusCodes.SUCCESS).json(musics);
-
     } catch (error) {
         next(error);
     }
@@ -21,8 +21,8 @@ router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunctio
 router.get("/:id", verifyJWT ,async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyId(Number(req.params.id));
+
         res.status(statusCodes.SUCCESS).json(music);
-        
     } catch (error) {
         next(error);
         
@@ -31,8 +31,8 @@ router.get("/:id", verifyJWT ,async(req: Request, res: Response, next: NextFunct
 router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
     try {
         const music = await MusicService.getMusicbyName(req.params.name);
+
         res.status(statusCodes.SUCCESS).json(music);
-        
     } catch (error) {
         next(error);
         
@@ -41,12 +41,8 @@ router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: Ne
 
 router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
     try {
-        const musics = await MusicService.getMusicsArtist(req.body.id);
-        if(!musics){
-            res.status(statusCodes.NOT_FOUND).json({
-                message: `O artista de ID ${req.body.id} não tem músicas ainda!`
-            });    
-        }
+        const musics = await MusicService.getMusicsbyArtist(req.body.id);
+
         res.status(statusCodes.SUCCESS).json(musics);
     } catch (error) {
         next(error);
@@ -58,10 +54,9 @@ router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: Ne
 // ROTA PARA CRIAR OBJETO
 router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createMusic(req: Request, res: Response, next: NextFunction) {
     try {
-        
         const music = await MusicService.createMusic(req.body, req.body.artistIds);
-        res.status(statusCodes.CREATED).json(music);
 
+        res.status(statusCodes.CREATED).json(music);
     } catch (error) {
         next(error);
     }
@@ -71,11 +66,9 @@ router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createM
 router.put("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
     
     try {
-
-        // Passando tanto o id quanto o body para o método updateUser
         const music = await MusicService.updateMusic(req.body.id, req.body);
 
-        res.status(statusCodes.SUCCESS).json(music); // Use o status 200 para sucesso na atualização
+        res.status(statusCodes.SUCCESS).json(music); 
     } catch (error) {
         next(error);
     }
@@ -83,15 +76,10 @@ router.put("/:id", async function createMusic(req: Request, res: Response, next:
 
 //ROTA PARA DELETAR OBJETO MUSICA
 router.delete("/:id", async function createMusic(req: Request, res: Response, next: NextFunction) {
-    
     try {
-        
         await MusicService.deleteMusic(req.body.Id);
 
-        res.status(statusCodes.SUCCESS).json({
-            message: `Música com ID ${req.body.id} deletado com sucesso!`,
-        }); 
-
+        res.status(statusCodes.NO_CONTENT).send();
     } catch (error) {
         next(error);
     }
