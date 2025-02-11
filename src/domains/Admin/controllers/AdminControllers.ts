@@ -13,9 +13,7 @@ const router = Router();
 router.post("/create", async function createAdmin(req: Request, res: Response, next: NextFunction) {
     try {
         const user = await AdminServices.createAdmin(req.body); // Passando req.body diretamente
-
         res.status(statusCodes.CREATED).json(user);
-
     } catch (error) {
         next(error);
     }
@@ -29,7 +27,6 @@ router.get("/", verifyJWT, checkRole([userRoles.ADMIN]),  async (req: Request, r
     try {
         const users = await AdminServices.getUsers();
         res.status(statusCodes.SUCCESS).json(users);
-
     } catch (error) {
         next(error);
     }
@@ -40,7 +37,6 @@ router.get("/id/:id", verifyJWT, checkRole([userRoles.ADMIN]), async(req: Reques
     try {
         const user = await AdminServices.getUserbyId(Number(req.params.id));
         res.status(statusCodes.SUCCESS).json(user);
-        
     } catch (error) {
         next(error);
         
@@ -65,7 +61,6 @@ router.put("/:id", verifyJWT,checkRole([userRoles.ADMIN]), async function update
     try {
          // Passando tanto o id quanto o body para o método updateUser
         const user = await AdminServices.updateUser(Number(req.params.id), req.body);
-
         res.status(statusCodes.SUCCESS).json(user);
     } catch (error) {
         next(error);

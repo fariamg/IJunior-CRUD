@@ -11,6 +11,10 @@ class ArtistService {
         if(body.name == null){
             throw new InvalidParamError("Nome do artista não informado!")
         }
+
+        if(body.countryId == null){
+            throw new InvalidParamError("País do artista não informado!")
+        }
         
         const artist = await prisma.artist.create({
             data: {
@@ -32,7 +36,7 @@ class ArtistService {
         const artists = await prisma.artist.findMany({
             orderBy: { name: 'asc'},
             include: {
-            country: true
+                country: true
         }});
         return artists;
     }
