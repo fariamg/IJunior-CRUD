@@ -2,8 +2,11 @@ import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { Artist, Music } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
+import ArtistService from "../../Artist/services/ArtistService";
 
 class MusicService {
+    
+    // C - CRUD - Criação de uma nova música
 
     async createMusic(body: Music, artistIds: number[]) {
 
@@ -36,6 +39,8 @@ class MusicService {
         return music;
     }
 
+    // R - CRUD - Leitura de músicas da database
+
     async getMusics() {
         const musics = await prisma.music.findMany({ 
             orderBy: { name: 'asc' }, 
@@ -67,7 +72,24 @@ class MusicService {
 
         return music;
     }
+    //Retorna todas músicas de um determinado artista 
+    async getMusicsArtist(id: number) {
+        await ArtistService.getArtistbyId(id);
+        const musics = await prisma.music.findMany({
+            where: {
+                artists: {
+                    some: { id: id }
+                }
+            },
+            include: {
+                artists: true 
+            }
+        });
+        return musics;
+    }
 
+
+    // U - CRUD - Update de alguma música baseada no id
     async updateMusic(id: number, body: Music) {
         
         await this.getMusicbyId(id);
@@ -94,7 +116,7 @@ class MusicService {
         });
         return updatedMusic;
     }
-
+    // D - CRUD - Deletar uma música baseado no ID
     async deleteMusic(id: number) {
         
         await this.getMusicbyId(id);
@@ -110,6 +132,20 @@ class MusicService {
     async deleteAll() {
         const deletedMusics = await prisma.music.deleteMany();
         return deletedMusics
+    }
+
+
+    //Incrementa o número de reproduções  
+    async addPlayCount(id: number) {
+        await this.getMusicbyId(id); 
+        const updatedMusic = await prisma.music.update({
+            where: { id: id },             data: {
+                playCount: {
+                    increment: 1 // Incrementa o playCount
+                }
+            }
+        });
+        return updatedMusic; // Retorna a música atualizada
     }
 }
 

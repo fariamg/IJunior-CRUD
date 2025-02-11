@@ -3,6 +3,7 @@ import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import bcrypt from "bcrypt";
 import prisma from "../../../../config/prismaClient";
+import { get } from "http";
 
 
 class UserService {
@@ -70,7 +71,8 @@ class UserService {
         const users = await prisma.user.findMany( {
             orderBy: { createdAt: 'asc'},
             include: {
-                country: true
+                country: true,
+                listenedMusics: true
             }
         }); 
         return users;
@@ -80,7 +82,8 @@ class UserService {
         const user = await prisma.user.findUnique({
             where: { email: wantedEmail },
             include: {
-                country: true
+                country: true,
+                listenedMusics: true
             }
         });
         if(!user){
@@ -93,7 +96,8 @@ class UserService {
         const user = await prisma.user.findUnique({
             where: { id },
             include: {
-                country: true
+                country: true,
+                listenedMusics: true
             }
         });
     
@@ -104,6 +108,10 @@ class UserService {
         
     }
 
+    async getUserMusics(id : number) {
+        const user = await this.getUserbyId(id);
+        return user.listenedMusics;
+    }
 
     // U - CRUD - Update de algum usuário baseado no ID
 
@@ -159,7 +167,37 @@ class UserService {
         return updatedUser;
     }
 
+    async updatePassword(userId: number, currentPassword: string, newPassword: string) {
+        
+        const user = await this.getUserbyId(userId);
+    
+        // Verificar se a senha atual está correta
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+            throw new InvalidParamError("Senha atual incorreta!");
+        }
 
+        // Verificar se a senha atual e a nova senha foram fornecidas
+        if (!currentPassword || !newPassword) {
+            throw new InvalidParamError("Senha atual e nova senha são obrigatórias!");
+        }
+        // Verificar se a senha atual e a nova senha são diferentes
+        if (currentPassword == newPassword) {
+            throw new InvalidParamError("Senha atual e nova senha devem ser diferentes!");
+        }
+
+        const encryptedPassword = await this.encryptPassword(newPassword);
+    
+        // Atualizar a senha no banco de dados
+        const updatedUser = await prisma.user.update({
+            where: { id: userId },
+            data: {
+                password: encryptedPassword // Nova senha criptografada
+            }
+        });
+    
+        return updatedUser;
+    }
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
@@ -177,6 +215,37 @@ class UserService {
     async deleteAll() {
         const deletedUsers = await prisma.user.deleteMany();
         return deletedUsers;
+    }
+
+    //Adiciona uma música ao conjunto de músicas ouvidas
+    async registerMusicListen(userId: number, musicId: number) {
+
+        await this.getUserbyId(userId)
+
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                listenedMusics: {
+                    connect: { id: musicId } // Conecta a música ao usuário
+                }
+            }
+        });
+    }
+
+    //Remove uma música ao conjunto de músicas ouvidas
+    async removeMusicListen(userId: number, musicId: number) {
+        // Verifica se o usuário existe
+        await this.getUserbyId(userId);
+    
+        // Remove a música do conjunto de músicas ouvidas pelo usuário
+        await prisma.user.update({
+            where: { id: userId },
+            data: {
+                listenedMusics: {
+                    disconnect: { id: musicId } // Remove a música do usuário
+                }
+            }
+        });
     }
 }
 

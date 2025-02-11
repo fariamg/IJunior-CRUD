@@ -39,6 +39,21 @@ router.get("/name/:name", verifyJWT, async(req: Request, res: Response, next: Ne
     }
 })
 
+router.get("/artist/:id", verifyJWT, async(req: Request, res: Response, next: NextFunction) => {
+    try {
+        const musics = await MusicService.getMusicsArtist(req.body.id);
+        if(!musics){
+            res.status(statusCodes.NOT_FOUND).json({
+                message: `O artista de ID ${req.body.id} não tem músicas ainda!`
+            });    
+        }
+        res.status(statusCodes.SUCCESS).json(musics);
+    } catch (error) {
+        next(error);
+        
+    }
+})
+
 
 // ROTA PARA CRIAR OBJETO
 router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async function createMusic(req: Request, res: Response, next: NextFunction) {
