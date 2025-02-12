@@ -1,11 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
 import LikeService from "../services/LikeService";
 import statusCodes from "../../../../utils/constants/statusCodes";
+import { verifyJWT, checkRole } from "../../../middlewares/auth";
+import { userRoles } from "../../../../utils/constants/userRoles";
 
 const router = Router();
 
 // ROTA PARA LISTAR TODOS OS LIKES
-router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikes();
         res.status(statusCodes.SUCCESS).json(likes);
@@ -15,7 +17,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // ROTA PARA OBTER LIKES POR ID DE USUÁRIO
-router.get("/user/:userId", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/user/:userId", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikesByUserId(Number(req.params.userId));
         res.status(statusCodes.SUCCESS).json(likes);
@@ -25,7 +27,7 @@ router.get("/user/:userId", async (req: Request, res: Response, next: NextFuncti
 });
 
 // ROTA PARA LISTAR LIKES POR ID DE MÚSICA
-router.get("/music/:musicId", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/music/:musicId", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const likes = await LikeService.getLikesByMusicId(Number(req.params.musicId));
         res.status(statusCodes.SUCCESS).json(likes);
@@ -35,7 +37,7 @@ router.get("/music/:musicId", async (req: Request, res: Response, next: NextFunc
 });
 
 // ROTA PARA CRIAR UM NOVO LIKE
-router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+router.post("/", verifyJWT, checkRole([userRoles.USER]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const like = await LikeService.createLike(req.body.userId, req.body.musicId);
         res.status(statusCodes.CREATED).json(like);;
@@ -45,7 +47,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 });
 
 // ROTA PARA DELETAR UM LIKE
-router.delete("/:userId/:musicId", async (req: Request, res: Response, next: NextFunction) => {
+router.delete("/:userId/:musicId", verifyJWT, checkRole([userRoles.USER]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         await LikeService.deleteLike(Number(req.params.userId), Number(req.params.musicId));
         res.status(statusCodes.NO_CONTENT).send();
