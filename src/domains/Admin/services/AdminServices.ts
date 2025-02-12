@@ -43,11 +43,9 @@ class UserService {
             throw new InvalidParamError("Formato de email inválido!");
         }
 
-
         const encrypted = await this.encryptPassword(body.password);
 
         // Criação do objeto
-
         return await prisma.user.create({
             data: {
                 fullName: body.fullName,
@@ -115,8 +113,6 @@ class UserService {
 
     // U - CRUD - Update de algum usuário baseado no ID
     async updateUser(id: number, body: User) {
-
-    
         const encrypted = await this.encryptPassword(body.password);
 
         await this.getUserbyId(id); //usado para verificar se existe usuário com esse ID
@@ -131,9 +127,7 @@ class UserService {
             throw new InvalidParamError("Nome completo não pode ser nulo!")
         }
 
-    
         const updatedUser = await prisma.user.update({
-
             omit: {
                 password: true
             },
