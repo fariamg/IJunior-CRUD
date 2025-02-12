@@ -83,7 +83,6 @@ router.put("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request,
 });
 
 // ROTA PARA DELETAR UM ARTISTA
-
 router.delete("/:id", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
