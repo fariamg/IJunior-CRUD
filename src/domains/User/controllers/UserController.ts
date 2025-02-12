@@ -8,8 +8,6 @@ const router = Router();
 
 router.post("/login", login);
 router.post("/logout", verifyJWT, checkRole([userRoles.ADMIN, userRoles.USER]), logout);
-// router.post("/logout", verifyJWT, logout)
-
 
 // ROTA PARA CRIAR UM USUÁRIO (POST)
 router.post("/",  async function createUser(req: Request, res: Response, next: NextFunction) {
@@ -17,19 +15,14 @@ router.post("/",  async function createUser(req: Request, res: Response, next: N
         const user = await UserService.createUser(req.body); // Passando req.body diretamente
 
         res.status(statusCodes.CREATED).json(user);
-
     } catch (error) {
         next(error);
     }
 });
 
-
-
 // ROTA PARA ATUALIZAR SEU USUÁRIO (PUT) //
 router.put("/update/:id", verifyJWT,  async function updateUser(req: Request, res: Response, next: NextFunction) {
-    
     try {
-
         const loggedInUserId = req.user.id;
          // Passando tanto o id quanto o body para o método updateUser
         const user = await UserService.updateUser(Number(req.params.id), req.body, loggedInUserId);
@@ -43,7 +36,6 @@ router.put("/update/:id", verifyJWT,  async function updateUser(req: Request, re
 // ROTA PARA ATUALIZAR A SENHA DO USUÁRIO (PUT)
 router.put("/account/password/", verifyJWT, async function updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
-        
         const loggedInUserId = req.user.id; // ID do usuário logado
         
         // Atualizar a senha usando o UserService
