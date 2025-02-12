@@ -102,7 +102,11 @@ class PlaylistService {
         return this.updatePlaylistRelations(playlistId, 'musics', 'connect', musicId);
     }
 
-    async removeMusicFromPlaylist(playlistId: number, musicId: number) {
+    async removeMusicFromPlaylist(playlistId: number, musicId: number, userId: number) {
+        if (userId != (await this.getPlaylistById(playlistId)).creatorId) {
+            throw new InvalidParamError("Somente o criador da playlist pode remover músicas");
+        }
+
         return this.updatePlaylistRelations(playlistId, 'musics', 'disconnect', musicId);
     }
 
@@ -110,9 +114,13 @@ class PlaylistService {
         return this.updatePlaylistRelations(playlistId, 'collaborators', 'connect', collaboratorId);
     }
 
-    async deletePlaylist(id: number) {
-        await this.getPlaylistById(id);
-        await prisma.playlist.delete({ where: { id } });
+    async deletePlaylist(playlistId: number, userId: number) {
+        if (userId != (await this.getPlaylistById(playlistId)).creatorId) {
+            throw new InvalidParamError("Somente o criador da playlist pode apagar essa playlist")
+        }
+
+        await this.getPlaylistById(playlistId);
+        await prisma.playlist.delete({ where: { id: playlistId } });
     }
 
     private async updatePlaylistRelations(playlistId: number, relation: 'musics' | 'collaborators', action: 'connect' | 'disconnect', relatedId: number) {
