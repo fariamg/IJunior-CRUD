@@ -4,7 +4,7 @@ import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import bcrypt from "bcrypt";
 import prisma from "../../../../config/prismaClient";
 import crypto from "crypto";
-
+import { sendEmail } from "../../../../utils/functions/sendEmail";
 
 
 class UserService {
@@ -40,14 +40,28 @@ class UserService {
     }
 
     async validateToken(email: string, token: string, password: string) {
-        const user = await prisma.user.findFirst({where: {email: email}});
-        const timeNow = new Date();
+        const forgotPassword = await prisma.forgotPassword.findFirst({
+            where: {
+                user: {
+                    email: email
+                },
+                token: token
+            },
+            include: {
+                user: true
+            }
+        });
 
-        if ((user?.tokenRecPass != token) || (user.dateRecPass != null && timeNow > user.dateRecPass)) {
+        if (!forgotPassword) {
             throw new InvalidParamError('Token inválido.');
         }
 
-        await this.updatePassword(user.id, password);
+        const timeNow = new Date();
+        if (timeNow > forgotPassword.expiresAt) {
+            throw new InvalidParamError('Token expirado.');
+        }
+
+        await this.updatePassword(forgotPassword.user.id, password);
     }
 
     async encryptPassword(password: string){
