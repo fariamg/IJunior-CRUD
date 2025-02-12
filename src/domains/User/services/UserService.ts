@@ -3,10 +3,53 @@ import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import bcrypt from "bcrypt";
 import prisma from "../../../../config/prismaClient";
-import { get } from "http";
+import crypto from "crypto";
+
 
 
 class UserService {
+    async createToken(email: string) {
+        if (!email) {
+            throw new InvalidParamError("Email não informado!");
+        }
+
+        await this.getUserbyEmail(email);
+
+        const token: string = crypto.randomBytes(20).toString("hex");
+        const date = new Date();
+        date.setHours(date.getHours() + 1);
+
+        await prisma.forgotPassword.create({
+            data: {
+                token: token,
+                expiresAt: date,
+                user : {
+                    connect: {
+                        email: email
+                    }
+                }
+            }
+        });
+
+        const info = {
+            email: email,
+            token: token
+        }
+
+        sendEmail(info);
+    }
+
+    async validateToken(email: string, token: string, password: string) {
+        const user = await prisma.user.findFirst({where: {email: email}});
+        const timeNow = new Date();
+
+        if ((user?.tokenRecPass != token) || (user.dateRecPass != null && timeNow > user.dateRecPass)) {
+            throw new InvalidParamError('Token inválido.');
+        }
+
+        await this.updatePassword(user.id, password);
+    }
+
     async encryptPassword(password: string){
         const saltRounds = 10;
         const encrypted = await bcrypt.hash(password, saltRounds);
@@ -87,7 +130,7 @@ class UserService {
         });
 
         if(!user){
-            throw new QueryError(`Email ${wantedEmail} não encontrado!`);
+            throw new QueryError(`Usuário com email ${wantedEmail} não encontrado!`);
         }
 
         return user;
@@ -106,7 +149,6 @@ class UserService {
             throw new QueryError(`Id ${id} não encontrado`);
         }
         return user;
-        
     }
 
     async getUserMusics(id : number) {
@@ -163,22 +205,11 @@ class UserService {
         return updatedUser;
     }
 
-    async updatePassword(userId: number, currentPassword: string, newPassword: string) {
-        const user = await this.getUserbyId(userId);
-    
-        // Verificar se a senha atual está correta
-        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-        if (!isPasswordValid) {
-            throw new InvalidParamError("Senha atual incorreta!");
-        }
+    async updatePassword(userId: number, newPassword: string) {
+        await this.getUserbyId(userId);
 
-        // Verificar se a senha atual e a nova senha foram fornecidas
-        if (!currentPassword || !newPassword) {
-            throw new InvalidParamError("Senha atual e nova senha são obrigatórias!");
-        }
-        // Verificar se a senha atual e a nova senha são diferentes
-        if (currentPassword == newPassword) {
-            throw new InvalidParamError("Senha atual e nova senha devem ser diferentes!");
+        if (userId != (await this.getUserbyId(userId)).id) {
+            throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
         }
 
         const encryptedPassword = await this.encryptPassword(newPassword);
