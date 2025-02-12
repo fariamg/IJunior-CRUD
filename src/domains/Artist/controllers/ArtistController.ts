@@ -44,7 +44,7 @@ router.get("/name/:name", verifyJWT,  async (req: Request, res: Response, next: 
 
 // ROTA PARA OBTER ARTISTAS POR PAÍS
 
-router.get("/country/:country", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/country/:country", verifyJWT, async (req: Request, res: Response, next: NextFunction) => {
     try {
         const country = req.params.country;
 
@@ -57,7 +57,6 @@ router.get("/country/:country", async (req: Request, res: Response, next: NextFu
 });
 
 // ROTA PARA CRIAR UM ARTISTA 
-
 router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) =>{
     try {
         const { name, photo, bio, listeners } = req.body;
