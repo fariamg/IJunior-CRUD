@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import SubscriptionService from "../services/SubscriptionService";
+import statusCodes from "../../../../utils/constants/statusCodes";
 
 const router = Router();
 
@@ -7,7 +8,7 @@ const router = Router();
 router.get("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const subscriptions = await SubscriptionService.getAllSubscriptions();
-        res.json(subscriptions);
+        res.status(statusCodes.SUCCESS).json(subscriptions);
     } catch (error) {
         next(error);
     }
@@ -17,7 +18,7 @@ router.get("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/user/:userId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const subscription = await SubscriptionService.getSubscriptionByUserId(Number(req.params.userId));
-        res.json(subscription);
+        res.status(statusCodes.SUCCESS).json(subscription);
     } catch (error) {
         next(error);
     }
@@ -27,7 +28,7 @@ router.get("/user/:userId", async (req: Request, res: Response, next: NextFuncti
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const subscription = await SubscriptionService.createSubscription(req.body.userId, req.body.type, req.body.duration);
-        res.status(201).json(subscription);
+        res.status(statusCodes.SUCCESS).json(subscription);
     } catch (error) {
         next(error);
     }
@@ -37,7 +38,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.put("/", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const subscription = await SubscriptionService.updateSubscription(req.body.userId, req.body.type, req.body.duration);
-        res.json(subscription);
+        res.status(statusCodes.SUCCESS).json(subscription);
     } catch (error) {
         next(error);
     }
@@ -47,7 +48,7 @@ router.put("/", async (req: Request, res: Response, next: NextFunction) => {
 router.delete("/:userId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         await SubscriptionService.cancelSubscription(Number(req.params.userId));
-        res.status(204).send();
+        res.status(statusCodes.NOT_FOUND).send();
     } catch (error) {
         next(error);
     }
