@@ -8,12 +8,8 @@ import { sendEmail } from "../../../../utils/functions/sendEmail";
 
 
 class UserService {
-    async createToken(email: string) {
-        if (!email) {
-            throw new InvalidParamError("Email não informado!");
-        }
-
-        await this.getUserbyEmail(email);
+    async createToken(userId: string) {
+        const user = await this.getUserbyId(Number(userId));
 
         const token: string = crypto.randomBytes(20).toString("hex");
         const date = new Date();
@@ -25,14 +21,14 @@ class UserService {
                 expiresAt: date,
                 user : {
                     connect: {
-                        email: email
+                        email: user.email
                     }
                 }
             }
         });
 
         const info = {
-            email: email,
+            email: user.email,
             token: token
         }
 
@@ -166,8 +162,20 @@ class UserService {
     }
 
     async getUserMusics(id : number) {
-        const user = await this.getUserbyId(id);
-        return user.listenedMusics;
+        if (!id || isNaN(id)) {
+            throw new InvalidParamError("Insira um ID de usuário válido");
+        }
+        
+        const musics = await prisma.user.findUnique({
+            where: { id },
+            select: { listenedMusics: true }
+        });
+
+        if (!musics) {
+            throw new QueryError(`Usuário com ID ${id} não ouviu nenhuma música`);
+        }
+
+        return musics
     }
 
     // U - CRUD - Update de algum usuário baseado no ID
@@ -222,10 +230,6 @@ class UserService {
     async updatePassword(userId: number, newPassword: string) {
         await this.getUserbyId(userId);
 
-        if (userId != (await this.getUserbyId(userId)).id) {
-            throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
-        }
-
         const encryptedPassword = await this.encryptPassword(newPassword);
     
         // Atualizar a senha no banco de dados
@@ -241,10 +245,6 @@ class UserService {
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
-        if (wantedId !== loggedInUserId) {
-            throw new InvalidParamError("Você não tem permissão para atualizar este usuário.");
-        }
-    
         await this.getUserbyId(wantedId);
         await prisma.user.delete(({ where: { id: wantedId } }));
     }

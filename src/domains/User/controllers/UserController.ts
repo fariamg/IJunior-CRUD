@@ -36,10 +36,8 @@ router.put("/update/:id", verifyJWT,  async function updateUser(req: Request, re
 // ROTA PARA ATUALIZAR A SENHA DO USUÁRIO (PUT)
 router.put("/account/password/", verifyJWT, async function updatePassword(req: Request, res: Response, next: NextFunction) {
     try {
-        const loggedInUserId = req.user.id; // ID do usuário logado
-        
         // Atualizar a senha usando o UserService
-        const updatedUser = await UserService.updatePassword(loggedInUserId, req.body.currentPassword, req.body.newPassword);
+        const updatedUser = await UserService.updatePassword(req.user.id, req.body.newPassword);
 
         // Resposta de sucesso
         res.status(statusCodes.SUCCESS).json({
@@ -75,7 +73,6 @@ router.get("/", verifyJWT, async function getMyAccount(req: Request, res: Respon
     try {
         const loggedInUserId = req.user.id; 
 
-       
         const user = await UserService.getUserbyId(loggedInUserId);
 
         res.status(statusCodes.SUCCESS).json(user); 
@@ -121,16 +118,22 @@ router.delete("/account/unlisten/:id", verifyJWT, async function unlistenToMusic
 //ROTA DE LISTAR MUSICAS OUVIDAS
 router.get("/account/musics", verifyJWT, async function getUserMusics(req: Request, res: Response, next: NextFunction) {
     try {
-        const loggedInUserId = req.user.id; 
-        const musics = await UserService.getUserMusics(loggedInUserId);
-        if(!musics){
-            res.status(statusCodes.NOT_FOUND).json({
-                message:`Usuário não ouviu músicas ainda!`
-            })
-        }
+        const musics = await UserService.getUserMusics(req.user.id);
         res.status(statusCodes.SUCCESS).json(musics); 
     } 
     catch (error) {
+        next(error);
+    }
+});
+
+//ROTA DE RECUPEAR SENHA
+router.post("/forgot-password", verifyJWT, checkRole([userRoles.USER]), async function forgotPassword(req: Request, res: Response, next: NextFunction) {
+    try {
+        await UserService.createToken(req.body.id);
+        res.status(statusCodes.SUCCESS).json({
+            message: "Email enviado com sucesso!"
+        });
+    } catch (error) {
         next(error);
     }
 });
