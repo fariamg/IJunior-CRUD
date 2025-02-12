@@ -2,7 +2,7 @@
 
 criar arquivo .env e colar os comandos:
 
-APP_URL = "npm http://localhost:3000/"
+APP_URL = "http://localhost:3000/"
 PORT = 3030
 SECRET_KEY = "mySecretKey"
 JWT_EXPIRATIOn = 604800 
