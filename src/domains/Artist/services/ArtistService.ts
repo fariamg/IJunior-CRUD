@@ -17,7 +17,7 @@ class ArtistService {
             throw new InvalidParamError("País do artista não informado!")
         }
         
-        const artist = await prisma.artist.create({
+        return await prisma.artist.create({
             data: {
                 name: body.name,
                 photo: body.photo,
@@ -30,7 +30,6 @@ class ArtistService {
                 }
             }
         });
-        return artist
     }
 
     async getArtists() {

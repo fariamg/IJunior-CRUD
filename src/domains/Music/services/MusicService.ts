@@ -26,7 +26,7 @@ class MusicService {
             throw new InvalidParamError("ID do(s) artista(s) não informado(s)!")
         }
 
-        const music = await prisma.music.create({
+        return await prisma.music.create({
             data: {
                 name: body.name,
                 duration: body.duration,
@@ -38,7 +38,6 @@ class MusicService {
             include: { artists: true }, 
         });
 
-        return music;
     }
 
     // R - CRUD - Leitura de músicas da database

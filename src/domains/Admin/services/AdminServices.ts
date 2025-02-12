@@ -48,7 +48,7 @@ class UserService {
 
         // Criação do objeto
 
-        const user = await prisma.user.create({
+        return await prisma.user.create({
             data: {
                 fullName: body.fullName,
                 email: body.email,
@@ -62,7 +62,6 @@ class UserService {
                 }
             }
         });
-        return user;
     }
     
     // R - CRUD - Leitura dos usuários da database manipulaçao do CRUD

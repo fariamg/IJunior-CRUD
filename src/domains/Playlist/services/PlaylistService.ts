@@ -9,15 +9,13 @@ class PlaylistService {
             throw new InvalidParamError("Insira um ID de criador válido");
         }
 
-        const playlist = await prisma.playlist.create({
+        return await prisma.playlist.create({
             data: {
                 ...body,
                 creatorId,
                 collaborators: collaboratorIds ? { connect: collaboratorIds.map(id => ({ id })) } : undefined,
             },
         });
-        
-        return playlist;
     }
 
     async getPlaylists() {

@@ -14,13 +14,12 @@ class CountryService {
             throw new InvalidParamError("Continente do país não informado!");
         }
 
-        const country = await prisma.country.create({
+        return await prisma.country.create({
             data: {
                 name: body.name,
                 continent: body.continent,
             }
         });
-        return country
     }
 
     async getCountries() {

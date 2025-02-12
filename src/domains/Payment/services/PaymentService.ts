@@ -17,7 +17,7 @@ class PaymentService {
             throw new InvalidParamError("Insira um id de assinatura válido");
         }
 
-        const payment = prisma.payment.create({
+        return await prisma.payment.create({
             data: {
                 userId,
                 amount,
