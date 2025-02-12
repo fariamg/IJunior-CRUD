@@ -10,12 +10,15 @@ declare global {
 
     namespace NodeJS{
         interface ProcessEnv{
-            APP_URL: string;
-            PORT: number;
-            DATABASE_URL: string;
-            SECRET_KEY: string;
-            JWT_EXPIRATION: string;
-            NODE_ENV: string;
+            DATABASE_URL : string,
+            PORT : string,
+            APP_URL : string,
+            SECRET_KEY : string,
+            JWT_EXPIRATION : string,
+            HOST_NODEMAILER : string,
+            PORT_NODEMAILER : number,
+            EMAIL_ACCOUNT : string,
+            EMAIL_PASSWORD : string,
         }
     }
 
