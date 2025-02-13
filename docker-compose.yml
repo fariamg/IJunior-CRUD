@@ -1,10 +1,43 @@
-services:
-  api:
+version: "1.0"
 
-  mysql:
-web:
-build: .
-ports:
-- "3030:3030"
-redis:
-image: "redis:alpine"
+services:
+  # Banco de dados MySQL
+  mysql-server:
+    container_name: ${NAME_CONTAINER_DB}
+    image: ${IMAGE_BD}
+    environment:
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "${PORT_DB}:3306"
+    expose:
+      - "3306"
+    networks:
+      - base_network
+    volumes:
+      - my_db:/var/lib/mysql
+
+  # Backend
+  backend-app:
+    environment:
+      - BD=${NAME_CONTAINER_DB}
+    container_name: ${NOME_CONTAINER_API}
+    build:
+      context: .
+      dockerfile: api.dockerfile
+    ports:
+      - "${PORT_API}:3030"
+    networks:
+      - base_network
+    command: npm start
+    depends_on:
+      - mysql-server
+
+networks:
+  base_network:
+    driver: bridge
+
+volumes:
+  my_db:
