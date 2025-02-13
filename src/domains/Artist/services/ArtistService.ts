@@ -1,8 +1,6 @@
-import { Artist, Country } from '@prisma/client';
+import { Artist } from '@prisma/client';
 import prisma from '../../../../config/prismaClient';
-import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
-import { NOTFOUND } from 'dns';
 import { NotFoundError } from '../../../../errors/NotFoundError';
 import CountryService from '../../Country/services/CountryService';
 

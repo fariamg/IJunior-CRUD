@@ -1,4 +1,4 @@
-import { Payment, Status } from "@prisma/client";
+import { Status } from "@prisma/client";
 import prisma from "../../../../config/prismaClient";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { NotFoundError } from "../../../../errors/NotFoundError";
