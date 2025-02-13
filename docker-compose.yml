@@ -1,43 +1,30 @@
-version: "1.0"
+version: '3.8'
 
 services:
-  # Banco de dados MySQL
-  mysql-server:
-    container_name: ${NAME_CONTAINER_DB}
-    image: ${IMAGE_BD}
-    environment:
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    ports:
-      - "${PORT_DB}:3306"
-    expose:
-      - "3306"
-    networks:
-      - base_network
-    volumes:
-      - my_db:/var/lib/mysql
-
-  # Backend
-  backend-app:
-    environment:
-      - BD=${NAME_CONTAINER_DB}
-    container_name: ${NOME_CONTAINER_API}
+  api:
     build:
       context: .
       dockerfile: api.dockerfile
+    container_name: minha_api
     ports:
-      - "${PORT_API}:3030"
-    networks:
-      - base_network
-    command: npm start
+      - "3030:3030"
+    volumes:
+      - .:/app
     depends_on:
-      - mysql-server
+      - mysql
+    environment:
+      DATABASE_URL: "mysql://root:trainee2024/2@mysql:3306/mydb"
 
-networks:
-  base_network:
-    driver: bridge
+  mysql:
+    image: mysql:8.0
+    container_name: meu_mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: trainee2024/2
+      MYSQL_DATABASE: mydb
 
 volumes:
-  my_db:
+  mysql_data:
