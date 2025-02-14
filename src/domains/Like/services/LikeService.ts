@@ -1,4 +1,4 @@
-import prisma from "../../../../config/prismaClient";
+import prisma from "../../../../config/client";
 import UserService from "../../User/services/UserService";
 import MusicService from "../../Music/services/MusicService";
 import { NotFoundError } from '../../../../errors/NotFoundError';

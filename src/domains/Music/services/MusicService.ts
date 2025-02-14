@@ -1,7 +1,7 @@
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { Music } from "@prisma/client";
-import prisma from "../../../../config/prismaClient";
+import prisma from "../../../../config/client";
 import ArtistService from "../../Artist/services/ArtistService";
 import { NotFoundError } from "../../../../errors/NotFoundError";
 
