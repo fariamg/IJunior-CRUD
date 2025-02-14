@@ -1,39 +1,37 @@
-version: '3.8'
-
 services:
   api:
     build:
       context: .
       dockerfile: api.dockerfile
-    container_name: minha_api
+    container_name: ${NOME_CONTAINER_API}
     ports:
-      - "3030:3030"
+      - "${PORT_API}:${PORT_API}"
     volumes:
       - .:/app
     depends_on:
       - mysql
     environment:
-      DATABASE_URL: "mysql://root:trainee2024%2F2@localhost:3306/database_projeto"
+      DATABASE_URL: ${DATABASE_URL}
     command: sh -c "sleep 20 && npx prisma migrate deploy && npm start"
     networks:
-      - my_network  # Definindo a rede para este serviço
+      - my_network
 
   mysql:
     image: mysql:8.0
-    container_name: mysql
+    container_name: ${CONTAINER_DB_NAME}
     ports:
-      - "3306:3306"
+      - "${PORT_DB}:${PORT_DB}"
     volumes:
       - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: trainee2024/2
-      MYSQL_DATABASE: database_projeto
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     networks:
-      - my_network  # Definindo a rede para este serviço
+      - my_network
 
 volumes:
   mysql_data:
 
 networks:
   my_network:
-    driver: bridge  # Garantindo que ambos os contêineres usem a mesma rede
+    driver: bridge
