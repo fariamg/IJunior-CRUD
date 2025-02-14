@@ -115,21 +115,41 @@ describe('getArtists', () => {
     });
 });
 
-// describe('getArtistbyId', () => {
-//     test('Deve retornar um artista pelo id', async () => {
-//         prismaMock.artist.findUnique.mockResolvedValue({
-//             id: 1,
-//             name: 'artist',
-//             photo: 'photo',
-//             bio: 'bio',
-//             listeners: 0,
-//             countryId: 1,
-//             createdAt: new Date(),
-//         });
+describe('getArtistbyId', () => {
+    test('Deve retornar um artista pelo id', async () => {
+        prismaMock.artist.findUnique.mockResolvedValue({
+            id: 1,
+            name: 'artist',
+            photo: 'photo',
+            bio: 'bio',
+            listeners: 0,
+            countryId: 1,
+            createdAt: new Date(),
+        });
 
-//         await expect(artistService.getArtistbyId(1)).resolves.toHaveProperty('name', 'artist');
-//     });
-// });
+        await expect(artistService.getArtistbyId(1)).resolves.toHaveProperty('name', 'artist');
+    });
+
+    test('Deve lançar um erro se o id não for informado', async () => {
+        await expect(artistService.getArtistbyId(undefined as unknown as number)).rejects.toThrow(InvalidParamError);
+        await expect(prisma.artist.findUnique).not.toHaveBeenCalled();
+    });
+    
+    test('Deve lançar um erro se o id não for um número', async () => {
+        await expect(artistService.getArtistbyId(NaN)).rejects.toThrow(InvalidParamError);
+        await expect(prisma.artist.findUnique).not.toHaveBeenCalled();
+    });
+
+    test('Deve lançar um erro se o artista não for encontrado', async () => {
+        prismaMock.artist.findUnique.mockResolvedValue(null);
+
+        await expect(artistService.getArtistbyId(1)).rejects.toThrow();
+        await expect(prisma.artist.findUnique).toHaveBeenCalledWith({
+            where: { id: 1 },
+            include: { country: true },
+        });
+    });
+});
 
 // describe('getArtistbyName', () => {
 // });
