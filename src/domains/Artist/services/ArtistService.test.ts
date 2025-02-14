@@ -63,10 +63,72 @@ describe('create new artist', () => {
 });
 
 
-// describe('getArtists', () => {
-// });
+describe('getArtists', () => {
+    test('Deve retornar uma lista de artistas', async () => {
+        prismaMock.artist.findMany.mockResolvedValue([
+            {
+                id: 1,
+                name: 'artist',
+                photo: 'photo',
+                bio: 'bio',
+                listeners: 0,
+                countryId: 1,
+                createdAt: new Date(),
+            }
+        ]);
+
+        await expect(artistService.getArtists()).resolves.toHaveLength(1);
+    });
+
+    test('Deve retornar uma lista vazia se não houver artistas', async () => {
+        prismaMock.artist.findMany.mockResolvedValue([]);
+
+        await expect(artistService.getArtists()).resolves.toHaveLength(0);
+    });
+
+    test('Deve retornar uma lista de artistas ordenada por nome', async () => {
+        prismaMock.artist.findMany.mockResolvedValue([
+            {
+                id: 1,
+                name: 'artist',
+                photo: 'photo',
+                bio: 'bio',
+                listeners: 0,
+                countryId: 1,
+                createdAt: new Date(),
+            },
+            {
+                id: 2,
+                name: 'artist2',
+                photo: 'photo',
+                bio: 'bio',
+                listeners: 0,
+                countryId: 1,
+                createdAt: new Date(),
+            }
+        ]);
+
+        const artists = await artistService.getArtists();
+
+        expect(artists[0].name).toEqual('artist');
+        expect(artists[1].name).toEqual('artist2');
+    });
+});
 
 // describe('getArtistbyId', () => {
+//     test('Deve retornar um artista pelo id', async () => {
+//         prismaMock.artist.findUnique.mockResolvedValue({
+//             id: 1,
+//             name: 'artist',
+//             photo: 'photo',
+//             bio: 'bio',
+//             listeners: 0,
+//             countryId: 1,
+//             createdAt: new Date(),
+//         });
+
+//         await expect(artistService.getArtistbyId(1)).resolves.toHaveProperty('name', 'artist');
+//     });
 // });
 
 // describe('getArtistbyName', () => {
