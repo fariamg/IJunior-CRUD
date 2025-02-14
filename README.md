@@ -22,3 +22,21 @@ PORT_API=3030
 
 # URL de conexão do banco
 DATABASE_URL="mysql://${MYSQL_USER}:${ROOT_PASSWORD}@${CONTAINER_DB_NAME}:${PORT_DB}/${MYSQL_DATABASE}"
+
+
+# Comandos Docker em ordem para execução
+
+docker-compose up --build -d
+
+docker exec -it minha_api npx prisma migrate deploy (Caso não mostre as tabelas, significa que você precisa utilizar esse comando para migrar a database)
+
+docker exec -it mysql mysql -u root -p (Ao rodar esse comando utilizar a senha do projeto.)
+
+# Dentro do Docker
+
+USE database_projeto;
+SHOW TABLES;
+SELECT * FROM countries;
+
+
+
