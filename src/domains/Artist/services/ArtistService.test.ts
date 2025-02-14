@@ -35,7 +35,7 @@ describe('create new artist', () => {
 
         expect(savedArtist.name).toEqual(artist.name);
     });
-
+    
     test('Deve lançar um erro se o nome do artista não for informado', async () => {
         const artist = {
             name:undefined as unknown as string,
