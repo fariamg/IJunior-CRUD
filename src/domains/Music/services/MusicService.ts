@@ -1,13 +1,13 @@
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
-import { Artist, Music } from "@prisma/client";
-import prisma from "../../../../config/prismaClient";
+import { Music } from "@prisma/client";
+import prisma from "../../../../config/client";
 import ArtistService from "../../Artist/services/ArtistService";
 import { NotFoundError } from "../../../../errors/NotFoundError";
 
 class MusicService {
     // C - CRUD - Criação de uma nova música
-    async createMusic(body: Music, artistIds: number[]) {
+    async createMusic(body: Omit<Music, 'createdAt' | 'id'>, artistIds: number[]) {
 
         //Verificar se alguns elementos não são nulos
         if(body.name == null){

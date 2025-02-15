@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import prisma from "../../config/prismaClient";
+import prisma from "../../config/client";
 import { PermissionError } from "../../errors/PermissionError";
 import {compare} from "bcrypt";
 import statusCodes from "../../utils/constants/statusCodes";

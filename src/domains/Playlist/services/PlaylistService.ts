@@ -1,5 +1,5 @@
 import { Playlist } from "@prisma/client";
-import prisma from "../../../../config/prismaClient";
+import prisma from "../../../../config/client";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import { NotFoundError } from "../../../../errors/NotFoundError";
 

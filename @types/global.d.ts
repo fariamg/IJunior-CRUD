@@ -21,6 +21,4 @@ declare global {
             EMAIL_PASSWORD : string,
         }
     }
-
-
 }

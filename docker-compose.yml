@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api.dockerfile
+    container_name: minha_api
+    ports:
+      - "3030:3030"
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: "mysql://root:trainee2024/2@mysql:3306/mydb"
+
+  mysql:
+    image: mysql:8.0
+    container_name: meu_mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: trainee2024/2
+      MYSQL_DATABASE: mydb
+
+volumes:
+  mysql_data:

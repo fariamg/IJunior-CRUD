@@ -1,7 +1,4 @@
-import { Like, User, Music } from '@prisma/client';
-import prisma from "../../../../config/prismaClient";
-import { InvalidParamError } from "../../../../errors/InvalidParamError";
-import { QueryError } from "../../../../errors/QueryError";
+import prisma from "../../../../config/client";
 import UserService from "../../User/services/UserService";
 import MusicService from "../../Music/services/MusicService";
 import { NotFoundError } from '../../../../errors/NotFoundError';

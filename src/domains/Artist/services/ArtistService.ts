@@ -1,13 +1,11 @@
-import { Artist, Country } from '@prisma/client';
-import prisma from '../../../../config/prismaClient';
-import { QueryError } from "../../../../errors/QueryError";
+import { Artist } from '@prisma/client';
+import prisma from '../../../../config/client';
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
-import { NOTFOUND } from 'dns';
 import { NotFoundError } from '../../../../errors/NotFoundError';
 import CountryService from '../../Country/services/CountryService';
 
 class ArtistService {
-    async createArtist(body: Artist) {
+    async createArtist(body: Omit<Artist, 'id' | 'createdAt'>) {
          //Verificar se alguns elementos não são nulos
         if(body.name == null){
             throw new InvalidParamError("Nome do artista não informado!")

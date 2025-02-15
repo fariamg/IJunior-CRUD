@@ -2,7 +2,7 @@ import { User } from "@prisma/client";
 import { QueryError } from "../../../../errors/QueryError";
 import { InvalidParamError } from "../../../../errors/InvalidParamError";
 import bcrypt from "bcrypt";
-import prisma from "../../../../config/prismaClient";
+import prisma from "../../../../config/client";
 
 
 class UserService {
