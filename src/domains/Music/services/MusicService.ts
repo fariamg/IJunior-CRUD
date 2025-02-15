@@ -7,7 +7,7 @@ import { NotFoundError } from "../../../../errors/NotFoundError";
 
 class MusicService {
     // C - CRUD - Criação de uma nova música
-    async createMusic(body: Music, artistIds: number[]) {
+    async createMusic(body: Omit<Music, 'createdAt' | 'id'>, artistIds: number[]) {
 
         //Verificar se alguns elementos não são nulos
         if(body.name == null){
