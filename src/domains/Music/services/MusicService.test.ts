@@ -3,7 +3,6 @@ import { prismaMock } from '../../../../config/singleton';
 import musicService from './MusicService';
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { NotFoundError } from '../../../../errors/NotFoundError';
-import { create } from 'domain';
 import prisma from '../../../../config/client';
 
 
@@ -24,6 +23,7 @@ describe('createMusic', () => {
         });
 
         const createdMusic = await musicService.createMusic(music, [1]);
+
         expect(createdMusic.name).toEqual(music.name);
     });
 
@@ -96,7 +96,8 @@ describe('getMusics', () => {
             },
         ]);
 
-        const musics = await musicService.getMusics();
+        const musics = await musicService.getMusics()
+        
         expect(musics[0].name).toEqual('music1');
         expect(musics[1].name).toEqual('music2');
     });
@@ -141,7 +142,7 @@ describe('updateMusic', () => {
             likeCount: 0,
             createdAt: new Date(),
         });
-        
+
         const updatedMusic = {
             id: 1,
             name: 'updated music',
