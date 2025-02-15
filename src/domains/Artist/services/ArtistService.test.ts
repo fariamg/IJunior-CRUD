@@ -41,7 +41,7 @@ describe('create new artist', () => {
     
     test('Deve lançar um erro se o nome do artista não for informado', async () => {
         const artist = {
-            name: undefined as unknown as string,
+            name: null as any,
             photo: 'photo',
             bio: 'bio',
             listeners: 0,
@@ -57,7 +57,7 @@ describe('create new artist', () => {
             photo: 'photo',
             bio: 'bio',
             listeners: 0,
-            countryId: undefined as unknown as number,
+            countryId: null as unknown as number,
         };
 
         await expect(artistService.createArtist(artist)).rejects.toThrow(InvalidParamError);
@@ -133,7 +133,7 @@ describe('getArtistbyId', () => {
     });
 
     test('Deve lançar um erro se o id não for informado', async () => {
-        await expect(artistService.getArtistbyId(undefined as unknown as number)).rejects.toThrow(InvalidParamError);
+        await expect(artistService.getArtistbyId(null as unknown as number)).rejects.toThrow(InvalidParamError);
         await expect(prisma.artist.findUnique).not.toHaveBeenCalled();
     });
     
@@ -169,7 +169,7 @@ describe('getArtistbyName', () => {
     });
 
     test('Deve lançar um erro se o nome não for informado', async () => {
-        await expect(artistService.getArtistbyName(undefined as unknown as string)).rejects.toThrow(InvalidParamError);
+        await expect(artistService.getArtistbyName(null as any)).rejects.toThrow(InvalidParamError);
         await expect(prisma.artist.findFirst).not.toHaveBeenCalled();
     });
 
@@ -216,7 +216,7 @@ describe('getArtistbyCountry', () => {
     });
 
     test('Deve lançar um erro se o país não for informado', async () => {
-        await expect(artistService.getArtistsbyCountry(undefined as unknown as string)).rejects.toThrow(InvalidParamError);
+        await expect(artistService.getArtistsbyCountry(null as any)).rejects.toThrow(InvalidParamError);
         await expect(prisma.artist.findMany).not.toHaveBeenCalled();
     });
 
@@ -260,7 +260,7 @@ describe('updateArtist', () => {
     });
 
     test('Deve lançar um erro se o id não for informado', async () => {
-        await expect(artistService.updateArtist(undefined as unknown as number, {} as Artist)).rejects.toThrow(InvalidParamError);
+        await expect(artistService.updateArtist(null as unknown as number, {} as Artist)).rejects.toThrow(InvalidParamError);
         await expect(prisma.artist.update).not.toHaveBeenCalled();
     });
 
@@ -309,7 +309,7 @@ describe('deleteArtist', () => {
     test('Deve lançar um erro se o id não for informado', async () => {
         jest.spyOn(artistService, 'getArtistbyId').mockRejectedValue(new InvalidParamError('Insira um id válido!'));
 
-        await expect(artistService.deleteArtist(undefined as unknown as number)).rejects.toThrow(InvalidParamError);
+        await expect(artistService.deleteArtist(null as unknown as number)).rejects.toThrow(InvalidParamError);
         expect(prisma.artist.delete).not.toHaveBeenCalled();    
     });
 
