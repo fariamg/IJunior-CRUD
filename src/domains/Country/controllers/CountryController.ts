@@ -37,7 +37,7 @@ router.get("/name/:name", verifyJWT, async (req: Request, res: Response, next: N
 });
 
 // ROTA PARA CRIAR UM NOVO PAÍS
-router.post("/", verifyJWT, checkRole([userRoles.ADMIN]), async (req: Request, res: Response, next: NextFunction) => {
+router.post("/",  async (req: Request, res: Response, next: NextFunction) => {
     try {
         const country = await CountryService.createCountry(req.body);
         res.status(statusCodes.CREATED).json(country);
