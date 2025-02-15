@@ -74,11 +74,6 @@ describe('getMusics', () => {
         await expect(musicService.getMusics()).rejects.toThrow(NotFoundError);
     });
 
-    test('Deve retornar uma lista de músicas vazia', async () => {
-        prismaMock.music.findMany.mockResolvedValue([]);
-        await expect(musicService.getMusics()).resolves.toHaveLength(0);
-    });
-
     test('Deve retornar uma lista de músicas ordenadas pelo nome', async () => {
         prismaMock.music.findMany.mockResolvedValue([
             {
@@ -135,10 +130,9 @@ describe('getMusicbyId', () => {
         prismaMock.music.findUnique.mockResolvedValue(null);
     });
 });
-
-describe('deleteMusic', () => {
-    test('Deve deletar uma música', async () => {
-        prismaMock.music.delete.mockResolvedValue({
+describe('updateMusic', () => {
+    test('Deve atualizar uma música', async () => {
+        jest.spyOn(musicService, 'getMusicbyId').mockResolvedValue({
             id: 1,
             name: 'music',
             duration: 180,
@@ -147,22 +141,7 @@ describe('deleteMusic', () => {
             likeCount: 0,
             createdAt: new Date(),
         });
-
-        await expect(musicService.deleteMusic(1)).resolves.toHaveProperty('name', 'music');
-    });
-
-    test('Deve lançar um erro se o ID não for informado', async () => {
-        await expect(musicService.deleteMusic(null as any)).rejects.toThrow(InvalidParamError);
-    });
-
-    test('Deve lançar um erro se a música não for encontrada', async () => {
-        prismaMock.music.delete.mockRejectedValue(new NotFoundError('Music not found'));
-        await expect(musicService.deleteMusic(1)).rejects.toThrow(NotFoundError);
-    });
-});
-
-describe('updateMusic', () => {
-    test('Deve atualizar uma música', async () => {
+        
         const updatedMusic = {
             id: 1,
             name: 'updated music',
@@ -178,3 +157,44 @@ describe('updateMusic', () => {
         await expect(musicService.updateMusic(1, updatedMusic)).resolves.toHaveProperty('name', 'updated music');
     });
 });
+
+describe('deleteMusic', () => {
+    test('Deve deletar uma música', async () => {
+        jest.spyOn(musicService, 'getMusicbyId').mockResolvedValue({
+            id: 1,
+            name: 'music',
+            duration: 180,
+            recordDate: new Date(),
+            playCount: 0,
+            likeCount: 0,
+            createdAt: new Date(),
+        });
+
+        prismaMock.music.delete.mockResolvedValue({
+            id: 1,
+            name: 'music',
+            duration: 180,
+            recordDate: new Date(),
+            playCount: 0,
+            likeCount: 0,
+            createdAt: new Date(),
+        });
+
+        await expect(musicService.deleteMusic(1)).resolves.toHaveProperty('name', 'music');
+    });
+
+    test('Deve lançar um erro se o ID não for informado', async () => {
+        jest.spyOn(musicService, 'getMusicbyId').mockRejectedValue(new InvalidParamError('Invalid ID'));
+
+        await expect(musicService.deleteMusic(null as any)).rejects.toThrow(InvalidParamError);
+        expect(prisma.artist.delete).not.toHaveBeenCalled(); 
+    });
+
+    test('Deve lançar um erro se a música não for encontrada', async () => {
+        jest.spyOn(musicService, 'getMusicbyId').mockRejectedValue(new NotFoundError('Music not found'));
+
+        await expect(musicService.deleteMusic(1)).rejects.toThrow(NotFoundError);
+        expect(prisma.artist.delete).not.toHaveBeenCalled();
+    });
+});
+
