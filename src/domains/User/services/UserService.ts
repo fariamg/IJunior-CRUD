@@ -67,7 +67,7 @@ class UserService {
     }
 
     // C - CRUD - Criação de um novo usuário
-    async createUser(body: User) {
+    async createUser(body: Omit<User, "id" | "createdAt" | "updatedAt" | "isActive" | "role">) {    
         
         //Verificar se existe usuário com determinado email
         const checkUser = await prisma.user.findUnique({
