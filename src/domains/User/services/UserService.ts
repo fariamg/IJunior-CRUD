@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import prisma from "../../../../config/client";
 import crypto from "crypto";
 import { sendEmail } from "../../../../utils/functions/sendEmail";
+import { NotFoundError } from "../../../../errors/NotFoundError";
 
 
 class UserService {
@@ -127,6 +128,10 @@ class UserService {
                 listenedMusics: true
             }
         }); 
+
+        if(!users.length) {
+            throw new NotFoundError("Nenhum usuário encontrado!");
+        }
         return users;
     }
 
@@ -156,7 +161,7 @@ class UserService {
         });
     
         if (!user) {
-            throw new QueryError(`Id ${id} não encontrado`);
+            throw new NotFoundError(`Id ${id} não encontrado`);
         }
         return user;
     }
@@ -245,14 +250,12 @@ class UserService {
 
     // D - CRUD - Deletar um usuário baseado no ID
     async deleteUser(wantedId: number, loggedInUserId: number) {
-        await this.getUserbyId(wantedId);
+        const user = await this.getUserbyId(wantedId);
         await prisma.user.delete(({ where: { id: wantedId } }));
+
+        return user;
     }
-    
-    async deleteAll() {
-        const deletedUsers = await prisma.user.deleteMany();
-        return deletedUsers;
-    }
+
 
     //Adiciona uma música ao conjunto de músicas ouvidas
     async registerMusicListen(userId: number, musicId: number) {

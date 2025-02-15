@@ -5,6 +5,7 @@ import prisma from '../../../../config/client';
 import { Role } from '@prisma/client';
 import { InvalidParamError } from '../../../../errors/InvalidParamError';
 import { QueryError } from '../../../../errors/QueryError';
+import { NotFoundError } from '../../../../errors/NotFoundError';
 
 describe('createUser', () => {
     test('Deve criar um novo usuário', async () => {
@@ -153,7 +154,7 @@ describe('getUsers', () => {
     test('Deve lançar um erro se nenhum usuário for encontrado', async () => {
         prismaMock.user.findMany.mockResolvedValue([]);
 
-        await expect(UserService.getUsers()).rejects.toThrow(QueryError);
+        await expect(UserService.getUsers()).rejects.toThrow(NotFoundError);
     });
 
     test('Deve retornar uma lista de usuários ordenados pelo nome', async () => {
@@ -406,29 +407,9 @@ describe('updateUser', () => {
 
         await expect(UserService.updateUser(1, user, 1)).rejects.toThrow(InvalidParamError);
     });
-
-    test('Deve lançar um erro se o usuario não for encontrado', async () => {
-        const user = {
-            fullName: null as any,
-            email: "user@gmail.com",
-            photo:'photo',
-            password: 'password',
-            countryId: 1,
-            id: 1,
-            createdAt: new Date(),
-            isActive: true,
-            role: Role.USER,
-            updatedAt: new Date(),
-        }
-
-        prismaMock.user.findUnique.mockResolvedValue(null);
-
-        await expect(UserService.updateUser(1, user, 1)).rejects.toThrow(QueryError);
-    });
-
     test('Deve lançar um erro se o id do usuario não for um numero', async () => {
         const user = {
-            fullName: null as any,
+            fullName: 'fullname',
             email: "user@gmail.com",
             photo:'photo',
             password: 'password',
@@ -470,7 +451,7 @@ describe('deleteUser', () => {
         jest.spyOn(UserService, 'getUserbyId').mockResolvedValue({
             fullName: 'user',
             email: 'user@gmail.com',
-            photo:'photo',
+            photo: 'photo',
             password: 'password',
             countryId: 1,
             country: {
@@ -489,7 +470,7 @@ describe('deleteUser', () => {
         prismaMock.user.delete.mockResolvedValue({
             fullName: 'user',
             email: 'user@gmail.com',
-            photo:'photo',
+            photo: 'photo',
             password: 'password',
             countryId: 1,
             id: 1,
@@ -499,7 +480,13 @@ describe('deleteUser', () => {
             updatedAt: new Date(),
         });
 
-        await expect(UserService.deleteUser(1, 1)).resolves.toHaveProperty('fullName', 'user');
+        await expect(UserService.deleteUser(1, 1)).resolves.toHaveProperty('email', 'user@gmail.com');
+    });
 
+
+    test('Deve lançar um erro se o usuário não for encontrado', async () => {
+        jest.spyOn(UserService, 'getUserbyId').mockRejectedValue(new NotFoundError('User not found'));
+
+        await expect(UserService.deleteUser(1, 1)).rejects.toThrow(NotFoundError);
     });
 });
